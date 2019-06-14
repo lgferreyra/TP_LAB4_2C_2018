@@ -1,0 +1,104 @@
+<form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()">
+  <div *ngIf="pedidoForm.get('id').value != ''">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="id">id:</label>
+        <input readonly name="id" class="form-control-plaintext" type="text" formControlName="id">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="mozo">mozo:</label>
+        <input readonly name="mozo" class="form-control-plaintext" type="text" formControlName="mozo">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="mesa">mesa:</label>
+        <input readonly id="mesa" class="form-control-plaintext" type="text" formControlName="mesa">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="codigo">codigo:</label>
+        <input readonly id="codigo" class="form-control-plaintext" type="text" formControlName="codigo">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="fechaCreacion">fechaCreacion:</label>
+        <input readonly id="fechaCreacion" class="form-control-plaintext" type="text" formControlName="fechaCreacion">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="fechaFin">fechafin:</label>
+        <input readonly id="fechaFin" class="form-control-plaintext" type="text" formControlName="fechaFin">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="estado">estado:</label>
+        <input readonly id="estado" class="form-control-plaintext" type="text" formControlName="estado">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="cliente">cliente:</label>
+      <input type="text" id="cliente" class="form-control" formControlName="cliente">
+    </div>
+    <!-- <div class="form-group col-md-4">
+      <label for="foto">foto:</label>
+      <input type="file" id="foto" formControlName="foto"/>
+    </div> -->
+  </div>
+  <div formArrayName="items">
+    <div *ngFor="let address of items.controls; let i=index">
+      <input type="text" [formControlName]="i" readonly class="form-control-plaintext">
+    </div>
+  </div>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Descripcion</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let itemMenu of itemsMenu; let j=index">
+        <td>{{itemMenu.nombre}}</td>
+        <td>{{itemMenu.descripcion}}</td>
+        <td>{{itemMenu.precio}}</td>
+        <td>cantidad</td>
+      </tr>
+    </tbody>
+  </table> 
+
+  <button type="submit" [disabled]="!pedidoForm.valid">Submit</button>
+</form>
+
+<hr>
+
+
+<p>
+  Form Value: {{ pedidoForm.value | json }}
+</p>
+
+
+<p>
+  Form Status: {{ pedidoForm.status }}
+</p>
+
+<p>
+  <button (click)="updateProfile()">Update Profile</button>
+</p>
+
+<!--
+<form formGroupName="pedidoForm">
+  <input type="text" formControlName="id">
+  <input type="text" formControlName="mozo">
+  <input type="text" formControlName="codigo">
+  <input type="text" formControlName="cliente">
+  <input type="text" formControlName="foto">
+  <input type="text" formControlName="fechaCreacion">
+  <input type="text" formControlName="fechaFin">
+  <input type="text" formControlName="estado">
+  <input type="text" formControlName="items">
+</form>-->

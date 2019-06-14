@@ -1,0 +1,112 @@
+<form name="form" (ngSubmit)="f.form.valid && registrar()" #f="ngForm" novalidate>
+    <h2>{{title}}</h2>
+    <div class="form-row">
+        <div class="form-group col-md-4" *ngIf="!modifing">
+            <label for="perfil">Tipo de usuario</label>
+            <select [(ngModel)]="perfilSelected" class="form-control" name="perfil" id="perfil">
+                <option value="3" selected>Chofer</option>
+                <option *ngIf="perfil == 1" value="2">Encargado</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4" *ngIf="modifing">
+            <label for="perfil">Tipo de usuario :
+                <b>{{usuario.perfil}}</b>
+            </label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6" [ngClass]="{ 'has-error': f.submitted && !nombre.valid }">
+            <label for="nombre">Nombre</label>
+            <input type="text" class="form-control" name="nombre" [(ngModel)]="usuario.nombre" #nombre="ngModel" required />
+            <div *ngIf="f.submitted && !nombre.valid" class="help-block">El nombre es requerido</div>
+        </div>
+        <div class="form-group col-md-6" [ngClass]="{ 'has-error': f.submitted && !apellido.valid }">
+            <label for="apellido">Apellido</label>
+            <input type="text" class="form-control" name="apellido" [(ngModel)]="usuario.apellido" #apellido="ngModel" required />
+            <div *ngIf="f.submitted && !apellido.valid" class="help-block">El apellido es requerido</div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6" [ngClass]="{ 'has-error': f.submitted && !documento.valid }">
+            <label for="documento">Documento</label>
+            <input type="text" class="form-control" name="documento" [(ngModel)]="usuario.documento" #documento="ngModel" maxlength="20"
+                required />
+            <div *ngIf="f.submitted && !documento.valid" class="help-block">El documento es requerido</div>
+        </div>
+        <div class="form-group col-md-6" [ngClass]="{ 'has-error': f.submitted && !fecha.valid }">
+            <label for="fecha">Fecha de nacimiento</label>
+            <input type="date" class="form-control" name="fecha" [(ngModel)]="usuario.fecha" #fecha="ngModel" required />
+            <div *ngIf="f.submitted && !fecha.valid" class="help-block">La fecha de nacimiento es requerida</div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-8">
+            <label for="direccion">Dirección</label>
+            <input type="text" class="form-control" name="direccion" [(ngModel)]="domicilio.direccion" (blur)="search(domicilio.direccion)"
+                #direccion="ngModel" maxlength="50" required>
+            <div *ngIf="f.submitted && !direccion.valid" class="help-block">La dirección es requerida</div>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="departamento">Departamento</label>
+            <input type="text" class="form-control" name="departamento" [(ngModel)]="domicilio.departamento" #departamento="ngModel"
+                maxlength="4">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="localidad">Localidad</label>
+            <input type="text" class="form-control" name="localidad" [(ngModel)]="domicilio.localidad" #localidad="ngModel" maxlength="50">
+        </div>
+        <div class="form-group col-md-2">
+            <label for="latitud">Latitud</label>
+            <input type="text" class="form-control" name="latitud" [(ngModel)]="domicilio.latitud" #latitud="ngModel" disabled>
+        </div>
+        <div class="form-group col-md-2">
+            <label for="longitud">Longitud</label>
+            <input type="text" class="form-control" name="longitud" [(ngModel)]="domicilio.longitud" #longitud="ngModel" disabled>
+        </div>
+    </div>
+
+    <agm-map [latitude]="domicilio.latitud" [longitude]="domicilio.longitud" [usePanning]="true" [zoom]="16" [zoomControl]="false">
+
+        <agm-marker [latitude]="domicilio.latitud" [longitude]="domicilio.longitud">
+            <agm-info-window>
+                <strong>{{domicilio.direccion}}</strong>
+            </agm-info-window>
+        </agm-marker>
+    </agm-map>
+
+    <div class="form-row">
+        <div class="form-group col-md-6" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
+            <label for="email">Correo electrónico</label>
+            <input type="email" class="form-control" name="email" [(ngModel)]="usuario.email" #email="ngModel" required />
+            <div *ngIf="f.submitted && !email.valid" class="help-block">Correo electrónico es requerido</div>
+        </div>
+        <div class="form-group col-md-6" [ngClass]="{ 'has-error': f.submitted && !password.valid }" *ngIf="!modifing">
+            <label for="password">Contraseña</label>
+            <input type="password" class="form-control" name="password" [(ngModel)]="usuario.password" #password="ngModel" required />
+            <div *ngIf="f.submitted && !password.valid" class="help-block">Contraseña es requerida</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="foto">Foto</label>
+        <br/>
+        <input name="foto" style="display: none" class="form-control" type="file" (change)="onFileChanged($event)" #fileInput>
+        <button type="button" (click)="fileInput.click()" class="btn btn-success">Subir foto</button>
+        <button type="button" (click)="quitarFoto()" class="btn btn-danger" *ngIf="url != null">Quitar</button>
+    </div>
+    <div class="form-group">
+        <img [src]="url" height="150" *ngIf="url != null">
+    </div>
+    <div class="form-group">
+        <re-captcha site_key="6LdeVl8UAAAAABVKGwTdah3s6_Cqb8hqtr6tTmyK"></re-captcha>
+    </div>
+    <div class="form-group">
+        <button type="submit" [disabled]="loading" class="btn btn-primary">Registrarse</button>
+        <button type="reset" [disabled]="loading" class="btn btn-warning">Limpiar</button>
+        <button type="button" routerLink="/user_list" class="btn btn-secondary">Volver</button>
+        <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+        />
+    </div>
+    <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+</form>

@@ -1,0 +1,119 @@
+<div class="container">
+  <h2>Administrar usuarios</h2>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="perfil">Tipo de usuario</label>
+      <select [(ngModel)]="selectedPerfil" class="form-control" name="perfil" id="perfil" (change)="ngOnInit()">
+        <option value="-1">Todo</option>
+        <option value="4">Cliente</option>
+        <option value="3">Chofer</option>
+        <option *ngIf="perfil == 1" value="2">Encargado</option>
+      </select>
+    </div>
+    <div class="form-group col-md-4 offset-md-4">
+        <button type="button" routerLink="/user_form" class="btn btn-primary">Crear Usuario</button>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div *ngIf="loading==false && empty==true" class="col-4">
+      <p>No hay usuarios</p>
+    </div>
+    <div *ngIf="loading==true" class="col-4">
+      <mat-spinner></mat-spinner>
+    </div>
+    <div class="col-12">
+      <table class="table table-hover" *ngIf="loading==false && empty==false">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
+            <th scope="col">Documento</th>
+            <th scope="col">Email</th>
+            <th scope="col">Perfil</th>
+            <th scope="col" colspan="2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuarios">
+            <td>{{usuario.nombre}}</td>
+            <td>{{usuario.apellido}}</td>
+            <td>{{usuario.documento}}</td>
+            <td>{{usuario.email}}</td>
+            <td>{{usuario.perfil}}</td>
+            <td>
+              <button type="button" class="btn btn-secondary" [routerLink]="['/user_form', usuario.id]">Editar</button>
+            </td>
+            <td>
+              <button type="button" (click)="selectUser(usuario)" class="btn btn-danger" data-toggle="modal" data-target="#confirmation">Eliminar</button>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="confirmationLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationLabel">Atención</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="!loadingDelete">
+        <p>Deseas eliminar el siguiente usuario:</p>
+        <div class="row">
+          <div class="col-sm-6">
+            <p>Nombre:</p>
+            <p>Apellido:</p>
+            <p>Documento:</p>
+            <p>Email:</p>
+            <p>Perfil:</p>
+          </div>
+          <div class="col-sm-6">
+            <p>{{selectedUsuario.nombre}}</p>
+            <p>{{selectedUsuario.apellido}}</p>
+            <p>{{selectedUsuario.documento}}</p>
+            <p>{{selectedUsuario.email}}</p>
+            <p>{{selectedUsuario.perfil}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body" *ngIf="loadingDelete">
+          <div class="row">
+            <div class="col-sm-12 align-center">
+              <mat-spinner></mat-spinner>
+            </div>
+          </div>
+        </div>
+      <div class="modal-footer" *ngIf="!loadingDelete">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="eliminarUser()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="response" tabindex="-1" role="dialog" aria-labelledby="responseLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="responseLabel">Información</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p *ngIf="deleteOK">El usuario ha sido eliminado correctamente</p>
+          <p *ngIf="!deleteOK">Ha ocurrido un problema</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
