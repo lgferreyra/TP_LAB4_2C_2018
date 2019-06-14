@@ -4,7 +4,7 @@ import { UserService } from '../_services/user.service';
 import { AuthenticationService } from "../_services/authentication.service";
 import { DomicilioService } from "../_services/domicilio.service";
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Domicilio } from '../domicilio';
 import { GeolocationService } from '../_services/geolocation.service';
 

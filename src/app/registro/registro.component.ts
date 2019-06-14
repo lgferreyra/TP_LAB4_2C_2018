@@ -3,7 +3,7 @@ import { Usuario } from '../usuario';
 import { UserService } from '../_services/user.service';
 import { Perfil } from '../perfil.enum';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Domicilio } from '../domicilio';
 import { DomicilioService } from '../_services/domicilio.service';
 
