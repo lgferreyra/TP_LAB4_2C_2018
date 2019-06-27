@@ -55,7 +55,7 @@ export class DashboardComponent implements OnInit {
             (error)=>{console.error(error)}
           );
         }
-    
+
         if(this.cervecero || this.bartender || this.cocinero || this.socio){
           this.pedidoService.getDetallePedidoDashboard(this.userID).subscribe(
             (result)=>{
@@ -170,6 +170,18 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  verPedido(pedido) {
+    this.pedidoService.getDetallePedido(pedido.pedidoID).subscribe(
+      (result) => {
+        const dialogRef = this.dialog.open(ConsultaDialog, {
+          width: '75%',
+          data: { items: result, title: pedido.codigoPedido}
+        });
+      },
+      (error) => console.error(error)
+    );
+  }
 }
 
 @Component({
@@ -196,6 +208,22 @@ export class FinalizarDialog {
 
   constructor(
     public dialogRef: MatDialogRef<FinalizarDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+}
+
+@Component({
+  selector: 'consulta-dialog',
+  templateUrl: 'consulta-dialog.html',
+})
+export class ConsultaDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ConsultaDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   onNoClick(): void {

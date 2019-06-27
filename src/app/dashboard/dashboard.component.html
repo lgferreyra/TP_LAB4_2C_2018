@@ -25,7 +25,10 @@
           <td>{{pedido.nombreCliente}}</td>
           <!-- <td>{{pedido.foto}}</td> -->
           <td>{{pedido.estado | titlecase}}</td>
-          <td *ngIf="pedido.estadoPedidoID == 3"><button type="button" class="btn btn-primary btn-sm" (click)="entregaPedido(pedido)">Entregar</button></td>
+          <td>
+            <button *ngIf="pedido.estadoPedidoID == 3" type="button" class="btn btn-primary btn-sm" (click)="entregaPedido(pedido)">Entregar</button>
+            <button type="button" class="btn btn-primary btn-sm" (click)="verPedido(pedido)">Ver pedido</button>
+          </td>
         </tr>
       </tbody>
     </table> 

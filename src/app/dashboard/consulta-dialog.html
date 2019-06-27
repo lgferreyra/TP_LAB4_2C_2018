@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Pedido: {{data.title}}</h1>
+<div mat-dialog-content>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Detalle</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Inicio</th>
+        <th scope="col">Estimado</th>
+        <th scope="col">Terminado</th>
+        <th scope="col">Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let detallePedido of data.items; let j=index">
+        <td>{{detallePedido.item}}</td>
+        <td>{{detallePedido.cantidad}}</td>
+        <td>{{detallePedido.fechaInicio}}</td>
+        <td>{{detallePedido.tiempoEstimado | isNullValue: "No especificado"}}</td>
+        <td>{{detallePedido.fechaFin}}</td>
+        <td>{{detallePedido.estado | titlecase}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button (click)="onNoClick()">Ok</button>
+</div>

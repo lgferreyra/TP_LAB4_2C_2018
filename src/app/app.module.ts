@@ -31,7 +31,7 @@ import { VehiculoFormComponent } from './vehiculo-form/vehiculo-form.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { AgmCoreModule } from '@agm/core'            // @agm/core
 import { AgmDirectionModule } from 'agm-direction';
-import { DashboardComponent, ComenzarDialog, FinalizarDialog } from './dashboard/dashboard.component';
+import { DashboardComponent, ComenzarDialog, FinalizarDialog, ConsultaDialog } from './dashboard/dashboard.component';
 import { PedidoFormComponent, ResumenDialog } from './pedido-form/pedido-form.component'   // agm-direction
 import { ItemMenuService } from './_services/item-menu.service';
 import { IsNullValuePipe } from './_pipe/is-null-value.pipe';
@@ -45,7 +45,8 @@ export function tokenGetter() {
   entryComponents:[
     ComenzarDialog,
     FinalizarDialog,
-    ResumenDialog
+    ResumenDialog,
+    ConsultaDialog
   ],
   declarations: [
     AppComponent,
@@ -62,6 +63,7 @@ export function tokenGetter() {
     ComenzarDialog,
     FinalizarDialog,
     ResumenDialog,
+    ConsultaDialog,
     IsNullValuePipe
   ],
   imports: [
