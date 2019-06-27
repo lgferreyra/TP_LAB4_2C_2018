@@ -22,12 +22,9 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './home/home.component';
-import { SucursalBoardComponent } from './sucursal-board/sucursal-board.component';
 import { RegistroComponent } from './registro/registro.component';
 import { UserFormComponent } from './user-form/user-form.component';
-import { ViajeFormComponent } from './viaje-form/viaje-form.component';
 import { DomicilioService } from './_services/domicilio.service';
-import { VehiculoFormComponent } from './vehiculo-form/vehiculo-form.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { AgmCoreModule } from '@agm/core'            // @agm/core
 import { AgmDirectionModule } from 'agm-direction';
@@ -52,11 +49,8 @@ export function tokenGetter() {
     AppComponent,
     LoginComponent,
     HomeComponent,
-    SucursalBoardComponent,
     RegistroComponent,
     UserFormComponent,
-    ViajeFormComponent,
-    VehiculoFormComponent,
     UserListComponent,
     DashboardComponent,
     PedidoFormComponent,
