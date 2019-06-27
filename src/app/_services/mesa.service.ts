@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class ItemMenuService {
+export class MesaService {
 
   public url: string = environment.apiUrl;
 
@@ -14,15 +14,8 @@ export class ItemMenuService {
     private http: Http
   ) { }
 
-  getItems(): Observable<any>{
-    return this.http.get(this.url + "itemMenu")
-      .map((response)=>{
-        return response.json();
-      });
-  }
-
-  getItemsBySector(sectorID): Observable<any>{
-    return this.http.get(this.url + "itemMenu/sector/" + sectorID)
+  getMesas():Observable<any>{
+    return this.http.get(this.url + "mesas")
       .map((response)=>{
         return response.json();
       });

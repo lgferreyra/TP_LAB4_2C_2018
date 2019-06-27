@@ -61,6 +61,16 @@ export class AuthenticationService {
             });
     }
 
+    getUserInfo(token: any): Observable<any>{
+        let data: FormData = new FormData();
+        let parsedToken = JSON.parse(token);
+        data.append("token", parsedToken.token);
+        return this.http.post(this.url + "getUserInfo", data)
+            .map((response: Response) => {
+                return response.json();
+            });
+    }
+
     public isAuthenticated(): boolean {
         const token = localStorage.getItem('currentUser');
         // Check whether the token is expired and return

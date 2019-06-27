@@ -1,28 +1,26 @@
 <?php 
 require_once"AccesoDatos.php";
 class Usuario {
-	public $id;
-	public $username;
-	public $password;
+	public $usuarioID;
+	public $clave;
 	public $nombre;
 	public $apellido;
-	public $nrodoc;
     public $email;
-	public $tipo_usuario_id;
-    public $cuil;	
+	public $perfilID;
 	public $fecha;
-	public $domicilio_id;
 	public $foto;
-	public $habilitado;
+	public $suspendido;
+	public $borrado;
 
 	public static function LoginUsuario($email, $password){
 		$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
 		$consulta =$objetoAccesoDato->RetornarConsulta("
             select * 
-            from usuarios 
+            from usuario 
             where email =:email 
-            and password = :password
-            and habilitado = 1");
+            and clave = :password
+			and borrado = 0
+			and suspendido = 0");
 		$consulta->bindValue(':email', $email, PDO::PARAM_STR);
 		$consulta->bindValue(':password', $password, PDO::PARAM_STR);
 		$consulta->execute();
@@ -93,6 +91,15 @@ class Usuario {
 		
 		$consulta->execute();			
 		$arrUsuarios= $consulta->fetchAll(PDO::FETCH_CLASS, "usuario");	
+		return $arrUsuarios;
+	}
+	
+	public static function Test(){
+    	$objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso(); 
+   		$consulta =$objetoAccesoDato->RetornarConsulta("select * from perfil");		
+		$consulta->execute();			
+		$arrUsuarios= $consulta->fetch(PDO::FETCH_ASSOC);
+		//$arrUsuarios= $consulta->fetchAll();
 		return $arrUsuarios;
     }
 }

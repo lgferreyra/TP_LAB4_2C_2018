@@ -1,26 +1,63 @@
-<p>
-  dashboard works!
-</p>
-<button *ngIf="mozo || socio" type="button" class="btn btn-primary" routerLink="/pedidoForm">Nuevo pedido</button>
+<div *ngIf="viewPedidos">
+    <h3>Pedidos</h3>
+    <div class="form-row">
+      <button type="button" class="btn btn-primary" routerLink="/pedidoForm">Nuevo pedido</button>
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Pedido</th>
+          <th scope="col">Mesa</th>
+          <th scope="col">Mozo</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Cliente</th>
+          <!-- <th scope="col">Foto</th> -->
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos; let i=index">
+          <td>{{pedido.codigoPedido}}</td>
+          <td>{{pedido.codigoMesa}}</td>
+          <td>{{pedido.nombreMozo}} {{pedido.apellido}}</td>
+          <td>{{pedido.fechaCreacion  | date:"MM/dd/yy hh:mm:ss"}}</td>
+          <td>{{pedido.nombreCliente}}</td>
+          <!-- <td>{{pedido.foto}}</td> -->
+          <td>{{pedido.estado | titlecase}}</td>
+          <td *ngIf="pedido.estadoPedidoID == 3"><button type="button" class="btn btn-primary btn-sm" (click)="entregaPedido(pedido)">Entregar</button></td>
+        </tr>
+      </tbody>
+    </table> 
+</div>
 
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-  </tbody>
-</table> 
+<div *ngIf="viewDetallesPedidos">
+  <h3>Detalles</h3>
+  <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Detalle</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Pedido</th>
+          <th scope="col">Inicio</th>
+          <th scope="col">Estimado</th>
+          <th scope="col">Terminado</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let detallePedido of detallesPedidos; let j=index">
+          <td>{{detallePedido.item}}</td>
+          <td>{{detallePedido.cantidad}}</td>
+          <td>{{detallePedido.codigo}}</td>
+          <td>{{detallePedido.fechaInicio}}</td>
+          <td>{{detallePedido.tiempoEstimado | isNullValue: "No especificado"}}</td>
+          <td>{{detallePedido.fechaFin}}</td>
+          <td>{{detallePedido.estado | titlecase}}</td>
+          <td *ngIf="detallePedido.estadoPedidoID == 1"><button type="button" class="btn btn-primary btn-sm" (click)="comenzarDetallePedido(detallePedido)">Comenzar</button></td>
+          <td *ngIf="detallePedido.estadoPedidoID == 2"><button type="button" class="btn btn-primary btn-sm" (click)="finalizarDetallePedido(detallePedido)">Finalizar</button></td>
+        </tr>
+      </tbody>
+    </table> 
+</div>

@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Confirmar</h1>
+<div mat-dialog-content>
+  <p>Confirma la finalización del pedido?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button (click)="onNoClick()">Cancelar</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="data">Confirmar</button>
+</div>

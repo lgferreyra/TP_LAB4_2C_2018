@@ -17,7 +17,6 @@ export class PedidoService {
     
     return this.http.get(this.url + "pedido/consulta/" + pedido + "/" + mesa)
       .map((response)=>{
-        console.log(response);
         return response.json();
       });
   }
@@ -25,7 +24,21 @@ export class PedidoService {
   getPedidosByEstado(estadoPedidoID: string): Observable<any> {
     return this.http.get(this.url + "pedido/estado/" + estadoPedidoID)
       .map((response)=>{
-        console.log(response);
+        return response.json();
+      });
+  }
+
+  getPedidos(): Observable<any> {
+    return this.http.get(this.url + "pedido")
+      .map((response)=>{
+        return response.json();
+      });
+  }
+
+  
+  getDetallePedidoDashboard(userID: string): Observable<any> {
+    return this.http.get(this.url + "pedidoDetalle/dashboard/" + userID)
+      .map((response)=>{
         return response.json();
       });
   }
@@ -33,8 +46,26 @@ export class PedidoService {
   getDetallePedido(pedidoID: string): Observable<any> {
     return this.http.get(this.url + "pedidoDetalle/pedido/" + pedidoID)
       .map((response)=>{
-        console.log(response);
-        response.json();
+        return response.json();
       });
+  }
+
+  savePedido(pedido: any){
+    return this.http.post(this.url + "pedido", pedido).map(
+      (response)=>{
+        return response.json();
+      },
+      (error)=>console.error(error)
+    );
+  }
+
+  entregaPedido(pedido: any){
+    return this.http.put(this.url + "pedido/estado", pedido).map(
+      (response)=>{
+        console.log(response);
+        return response.statusText;
+      },
+      (error)=>console.error(error)
+    );
   }
 }

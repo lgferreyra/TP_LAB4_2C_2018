@@ -1,19 +1,9 @@
 <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()">
-  <div *ngIf="pedidoForm.get('id').value != ''">
-    <div class="form-row">
+  <div *ngIf="pedidoForm.get('id').value != '' && pedidoForm.get('id').value != null">
+    <div class="form-row col-md-3">
       <div class="form-group">
         <label for="id">id:</label>
         <input readonly name="id" class="form-control-plaintext" type="text" formControlName="id">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-3">
-        <label for="mozo">mozo:</label>
-        <input readonly name="mozo" class="form-control-plaintext" type="text" formControlName="mozo">
-      </div>
-      <div class="form-group col-md-3">
-        <label for="mesa">mesa:</label>
-        <input readonly id="mesa" class="form-control-plaintext" type="text" formControlName="mesa">
       </div>
       <div class="form-group col-md-3">
         <label for="codigo">codigo:</label>
@@ -37,6 +27,24 @@
   </div>
 
   <div class="form-row">
+    <!-- <div class="form-group col-md-3">
+      <label for="mozo">mozo:</label>
+      <input readonly name="mozo" class="form-control-plaintext" type="text" formControlName="mozo">
+    </div> -->
+    <!-- <div class="form-group col-md-3">
+      <label for="mesa">mesa:</label>
+      <input readonly id="mesa" class="form-control-plaintext" type="text" formControlName="mesa">
+    </div> -->
+    <div class="form-group col-md-3">
+      <label for="mesa">Mesa:</label>
+      <select class="form-control" id="mesa" formControlName="mesa">
+        <option *ngIf="mesas.length == 0" [value]="null" [selected]="true">No hay mesas para asignar</option>
+        <option *ngFor="let mesa of mesas; let i = index;" [value]="mesa.MesaID">{{mesa.codigo}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-row">
     <div class="form-group col-md-4">
       <label for="cliente">cliente:</label>
       <input type="text" id="cliente" class="form-control" formControlName="cliente">
@@ -46,59 +54,73 @@
       <input type="file" id="foto" formControlName="foto"/>
     </div> -->
   </div>
-  <div formArrayName="items">
+  <!-- <div formArrayName="items">
     <div *ngFor="let address of items.controls; let i=index">
       <input type="text" [formControlName]="i" readonly class="form-control-plaintext">
     </div>
+  </div> -->
+  <div class="form-row">
+    <div class="form-group ccol-md-6 offset-md-6">
+      <select id="sector" class="form-control" (change)="changeSector()" [(ngModel)]="selectedSector" [ngModelOptions]="{standalone: true}">
+        <option value="0">Todo</option>
+        <option value="1">Barra de tragos y vinos</option>
+        <option value="2">Barra de choperas de cerveza artesanal</option>
+        <option value="3">Cocina</option>
+        <option value="4">Candy bar</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-6 overflow-auto" style="height: 400px">
+      <h5 class="display-4">Pedido</h5>
+      <table class="table table-hover table-borderless" *ngIf="pedidoDetalles.length > 0">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pedidoDetalle of pedidoDetalles; let j=index">
+            <td>{{pedidoDetalle.item.nombre}}</td>
+            <td>{{pedidoDetalle.item.precio}}</td>
+            <td><input type="number" min="1" max="10" class="form-control col-md-5" [(ngModel)]="pedidoDetalle.cantidad"
+                [ngModelOptions]="{standalone: true}"></td>
+            <td><button type="button" class="btn btn-danger btn-sm"
+                (click)="removeItem(pedidoDetalle)">Eliminar</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <p *ngIf="pedidoDetalles.length == 0">No hay pedidos :(</p>
+    </div>
+    <div class="col-md-6 overflow-auto" style="height: 400px">
+      <h5 class="display-4">Menu</h5>
+      <table class="table table-hover table-borderless">
+        <thead>
+          <tr>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripcion</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Agregar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let itemMenu of selectedItemsMenu; let j=index">
+            <td>{{itemMenu.nombre}}</td>
+            <td>{{itemMenu.descripcion}}</td>
+            <td>{{itemMenu.precio}}</td>
+            <td><button type="button" class="btn btn-primary btn-sm" (click)="addItem(itemMenu)">Agregar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th scope="col">Nombre</th>
-        <th scope="col">Descripcion</th>
-        <th scope="col">Precio</th>
-        <th scope="col">Cantidad</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let itemMenu of itemsMenu; let j=index">
-        <td>{{itemMenu.nombre}}</td>
-        <td>{{itemMenu.descripcion}}</td>
-        <td>{{itemMenu.precio}}</td>
-        <td>cantidad</td>
-      </tr>
-    </tbody>
-  </table> 
-
-  <button type="submit" [disabled]="!pedidoForm.valid">Submit</button>
+  <div class="form-row">
+    <button type="submit" [disabled]="!pedidoForm.valid" class="btn btn-primary">Confirmar</button>
+    <button type="button" (click)="clear()" class="btn btn-warning">Limpiar</button>
+    <button type="button" (click)="test()" class="btn btn-warning">test</button>
+  </div>
 </form>
-
-<hr>
-
-
-<p>
-  Form Value: {{ pedidoForm.value | json }}
-</p>
-
-
-<p>
-  Form Status: {{ pedidoForm.status }}
-</p>
-
-<p>
-  <button (click)="updateProfile()">Update Profile</button>
-</p>
-
-<!--
-<form formGroupName="pedidoForm">
-  <input type="text" formControlName="id">
-  <input type="text" formControlName="mozo">
-  <input type="text" formControlName="codigo">
-  <input type="text" formControlName="cliente">
-  <input type="text" formControlName="foto">
-  <input type="text" formControlName="fechaCreacion">
-  <input type="text" formControlName="fechaFin">
-  <input type="text" formControlName="estado">
-  <input type="text" formControlName="items">
-</form>-->

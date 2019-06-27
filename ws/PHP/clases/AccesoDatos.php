@@ -7,7 +7,7 @@ class AccesoDatos
     private function __construct()
     {
         try { 
-            $this->objetoPDO = new PDO('mysql:host=mysql.hostinger.com.ar;dbname=u589833021_labfi;charset=utf8', 'u589833021_labfi', 'facil1', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+            $this->objetoPDO = new PDO('mysql:host=sql101.epizy.com;dbname=id8126632_lab4_db;charset=utf8', 'id8126632_lab4_user', 'facil1', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             $this->objetoPDO->exec("SET CHARACTER SET utf8");
             } 
         catch (PDOException $e) { 
@@ -24,6 +24,18 @@ class AccesoDatos
      public function RetornarUltimoIdInsertado()
     { 
         return $this->objetoPDO->lastInsertId(); 
+    }
+
+    public function beginTransaction(){
+        $this->objetoPDO->beginTransaction();
+    }
+
+    public function commit(){
+        $this->objetoPDO->commit();
+    }
+
+    public function rollBack(){
+        $this->objetoPDO->rollBack();
     }
  
     public static function dameUnObjetoAcceso()

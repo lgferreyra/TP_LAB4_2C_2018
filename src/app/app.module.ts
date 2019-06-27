@@ -31,15 +31,22 @@ import { VehiculoFormComponent } from './vehiculo-form/vehiculo-form.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { AgmCoreModule } from '@agm/core'            // @agm/core
 import { AgmDirectionModule } from 'agm-direction';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { PedidoFormComponent } from './pedido-form/pedido-form.component'   // agm-direction
+import { DashboardComponent, ComenzarDialog, FinalizarDialog } from './dashboard/dashboard.component';
+import { PedidoFormComponent, ResumenDialog } from './pedido-form/pedido-form.component'   // agm-direction
 import { ItemMenuService } from './_services/item-menu.service';
+import { IsNullValuePipe } from './_pipe/is-null-value.pipe';
+import { DetallePedidoService } from './_services/detalle-pedido.service';
 
 export function tokenGetter() {
   return localStorage.getItem('currentUser');
 }
 
 @NgModule({
+  entryComponents:[
+    ComenzarDialog,
+    FinalizarDialog,
+    ResumenDialog
+  ],
   declarations: [
     AppComponent,
     LoginComponent,
@@ -51,7 +58,11 @@ export function tokenGetter() {
     VehiculoFormComponent,
     UserListComponent,
     DashboardComponent,
-    PedidoFormComponent
+    PedidoFormComponent,
+    ComenzarDialog,
+    FinalizarDialog,
+    ResumenDialog,
+    IsNullValuePipe
   ],
   imports: [
     BrowserModule,
@@ -82,7 +93,8 @@ export function tokenGetter() {
     DomicilioService,
     GeolocationService,
     PedidoService,
-    ItemMenuService
+    ItemMenuService,
+    DetallePedidoService
     // providers used to create fake backend
     // fakeBackendProvider,
     // MockBackend,
