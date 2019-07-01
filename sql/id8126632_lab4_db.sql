@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-06-2019 a las 05:26:35
+-- Tiempo de generación: 01-07-2019 a las 20:31:34
 -- Versión del servidor: 10.1.37-MariaDB
 -- Versión de PHP: 7.3.0
 
@@ -21,6 +21,22 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `id8126632_lab4_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `actividad`
+--
+
+CREATE TABLE `actividad` (
+  `actividadID` int(11) NOT NULL,
+  `tipoActividadID` int(11) NOT NULL,
+  `usuarioID` int(11) NOT NULL,
+  `fecha` datetime NOT NULL,
+  `pedidoID` int(11) DEFAULT NULL,
+  `pedidoDetalleID` int(11) DEFAULT NULL,
+  `comentario` varchar(255) COLLATE latin1_spanish_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- --------------------------------------------------------
 
@@ -75,7 +91,8 @@ INSERT INTO `estadopedido` (`estadoPedidoID`, `nombre`) VALUES
 (1, 'pendiente'),
 (2, 'en preparacion'),
 (3, 'listo para servir'),
-(4, 'entregado');
+(4, 'entregado'),
+(5, 'cancelado');
 
 -- --------------------------------------------------------
 
@@ -248,6 +265,26 @@ INSERT INTO `test` (`id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tipoactividad`
+--
+
+CREATE TABLE `tipoactividad` (
+  `tipoActividadID` int(11) NOT NULL,
+  `detalle` varchar(255) COLLATE latin1_spanish_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `tipoactividad`
+--
+
+INSERT INTO `tipoactividad` (`tipoActividadID`, `detalle`) VALUES
+(1, 'login'),
+(2, 'alta pedido'),
+(3, 'preparar pedido');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuario`
 --
 
@@ -279,6 +316,12 @@ INSERT INTO `usuario` (`usuarioID`, `nombre`, `apellido`, `codigo`, `email`, `fe
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `actividad`
+--
+ALTER TABLE `actividad`
+  ADD PRIMARY KEY (`actividadID`);
 
 --
 -- Indices de la tabla `categoria`
@@ -347,6 +390,12 @@ ALTER TABLE `test`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `tipoactividad`
+--
+ALTER TABLE `tipoactividad`
+  ADD PRIMARY KEY (`tipoActividadID`);
+
+--
 -- Indices de la tabla `usuario`
 --
 ALTER TABLE `usuario`
@@ -355,6 +404,12 @@ ALTER TABLE `usuario`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `actividad`
+--
+ALTER TABLE `actividad`
+  MODIFY `actividadID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estadomesa`
@@ -366,7 +421,7 @@ ALTER TABLE `estadomesa`
 -- AUTO_INCREMENT de la tabla `estadopedido`
 --
 ALTER TABLE `estadopedido`
-  MODIFY `estadoPedidoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `estadoPedidoID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `itemmenu`
@@ -409,6 +464,12 @@ ALTER TABLE `sector`
 --
 ALTER TABLE `test`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `tipoactividad`
+--
+ALTER TABLE `tipoactividad`
+  MODIFY `tipoActividadID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
