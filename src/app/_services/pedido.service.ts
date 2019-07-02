@@ -68,4 +68,14 @@ export class PedidoService {
       (error)=>console.error(error)
     );
   }
+
+  cancelarPedido(pedido: any){
+    return this.http.put(this.url + "pedido/cancelar", pedido).map(
+      (response)=>{
+        console.log(response);
+        return response.statusText;
+      },
+      (error)=>console.error(error)
+    );
+  }
 }

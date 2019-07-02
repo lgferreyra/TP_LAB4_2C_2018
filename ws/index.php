@@ -13,6 +13,7 @@ use \Firebase\JWT\JWT;
 //require 'PHP/clases/Personas.php';
 require 'PHP/clases/Usuario.php';
 require 'PHP/clases/Pizza.php';
+require 'PHP/clases/Actividad.php';
 //require 'PHP/clases/AccesoDatos.php';
 require 'vendor/autoload.php';
 
@@ -93,6 +94,7 @@ $app->post('/loginUsuario', function (Request $request, Response $response) {
         $jwt = JWT::encode($token, $key);
         $myArray["token"] = $jwt;
         $myArray["result"] = "OK";
+        Actividad::RegistrarLogin($result->usuarioID);
     } else {
         return $response
             ->withStatus(401)
@@ -282,6 +284,7 @@ $app->post('/pedido', function ($request, $response, $args) {
         $respuesta = $consulta->fetchAll();
         $json = json_encode($respuesta[0]);
 
+        Actividad::RegistrarAltaPedido($pedido['mozo'], $idInsertado);
     }
     catch (Exception $e) {
         echo $e->getMessage();
@@ -295,6 +298,53 @@ $app->post('/pedido', function ($request, $response, $args) {
     $response->write($json);
     return $response;
 });
+
+$app->put('/pedido/cancelar', function ($request, $response, $args) {
+    
+    try {
+        $pedido = $request->getParsedBody();
+        $pdo = AccesoDatos::dameUnObjetoAcceso();
+        
+        $pdo->beginTransaction();
+
+        $sqlPedido = "UPDATE pedido SET estadoPedidoID = ?
+                        WHERE pedidoID = ?";
+
+        $consulta = $pdo->RetornarConsulta($sqlPedido);
+
+        $consulta->execute(
+            array(
+                $pedido['estadoPedidoID'],
+                $pedido['pedidoID']
+            )
+        );
+
+        $sqlDetalle = "UPDATE pedidodetalle SET estadoPedidoID = ?
+                        WHERE pedidoID = ?";
+        $consulta = $pdo->RetornarConsulta($sqlDetalle);
+        $consulta->execute(
+            array(
+                $pedido['estadoPedidoID'],
+                $pedido['pedidoID']
+            )
+        );
+        
+        $pdo->commit();
+        $json = json_encode($pedido);
+
+    }
+    catch (Exception $e) {
+        echo $e->getMessage();
+
+        $pdo->rollBack();
+
+        $response->error_log('Hubo un error :(');
+    }
+
+    $response->write($json);
+    return $response;
+});
+
 
 $app->put('/pedido/estado', function ($request, $response, $args) {
 
