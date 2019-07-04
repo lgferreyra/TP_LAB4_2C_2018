@@ -3,6 +3,7 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { PedidoService } from '../_services/pedido.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { DetallePedidoService } from '../_services/detalle-pedido.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface DialogData {
   animal: string;
@@ -20,8 +21,9 @@ export class DashboardComponent implements OnInit {
     private authService: AuthenticationService,
     private pedidoService: PedidoService,
     private detallePedidoService: DetallePedidoService,
-    public dialog: MatDialog
-    ) { }
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) { }
 
   admin: boolean;
   socio: boolean;
@@ -42,38 +44,38 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     let token = localStorage.getItem('currentUser');
     this.authService.getUserInfo(token).subscribe(
-      (result)=>{
+      (result) => {
         this.userID = result.data.id;
         this.perfilID = result.data.perfil;
         this.getProfile(this.perfilID);
 
-        if(this.socio || this.mozo){
+        if (this.socio || this.mozo) {
           this.pedidoService.getPedidos().subscribe(
-            (result)=>{
+            (result) => {
               this.pedidos = result
             },
-            (error)=>{console.error(error)}
+            (error) => { console.error(error) }
           );
         }
 
-        if(this.cervecero || this.bartender || this.cocinero || this.socio){
+        if (this.cervecero || this.bartender || this.cocinero || this.socio) {
           this.pedidoService.getDetallePedidoDashboard(this.userID).subscribe(
-            (result)=>{
+            (result) => {
               console.log(result);
               this.detallesPedidos = result
             },
-            (error)=>{console.error(error)}
+            (error) => { console.error(error) }
           );
         }
 
       },
-      (error)=>{
+      (error) => {
         console.error(error);
       }
     );
   }
 
-  getProfile(id_profile){
+  getProfile(id_profile) {
     this.admin = false;
     this.bartender = false;
     this.mozo = false;
@@ -84,7 +86,7 @@ export class DashboardComponent implements OnInit {
       case 1:
         this.admin = true;
         break;
-      
+
       case 2:
         this.socio = true;
         break;
@@ -96,7 +98,7 @@ export class DashboardComponent implements OnInit {
       case 4:
         this.bartender = true;
         break;
-      
+
       case 5:
         this.cocinero = true;
         break;
@@ -111,18 +113,55 @@ export class DashboardComponent implements OnInit {
     this.viewDetallesPedidos = this.cervecero || this.cocinero || this.bartender || this.socio;
   }
 
-  entregaPedido(pedido){
-    pedido.estadoPedidoID = 4;
-    this.pedidoService.entregaPedido(pedido).subscribe(
-      response=>{
-        console.log(response);
-        this.ngOnInit();
-      },
-      error=>console.error(error)
-    );
+  cancelarPedido(pedido) {
+
+    let time = "1";
+
+    const dialogRef = this.dialog.open(CancelarDialog, {
+      width: '270px',
+      data: { time: time }
+    });
+
+    dialogRef.beforeClosed().subscribe(result => {
+      if (result != undefined) {
+        pedido.estadoPedidoID = 5;
+        this.pedidoService.cancelarPedido(pedido).subscribe(
+          result => {
+            console.log(result);
+            this.ngOnInit();
+            this.snackBar.open("El pedido ha sido cancelado","",{duration:3000,verticalPosition:'top'});
+          },
+          error => console.error(error)
+        );
+      }
+    });
   }
 
-  comenzarDetallePedido(detallePedido){
+  entregaPedido(pedido) {
+
+    let time = "1";
+
+    const dialogRef = this.dialog.open(EntregarDialog, {
+      width: '270px',
+      data: { time: time }
+    });
+
+    dialogRef.beforeClosed().subscribe(result => {
+      if (result != undefined) {
+        pedido.estadoPedidoID = 4;
+        this.pedidoService.entregaPedido(pedido).subscribe(
+          response => {
+            console.log(response);
+            this.ngOnInit();
+            this.snackBar.open("El pedido se ha entregado","",{duration:3000,verticalPosition:'top'});
+          },
+          error => console.error(error)
+        );
+      }
+    });
+  }
+
+  comenzarDetallePedido(detallePedido) {
 
     let time = "1";
 
@@ -132,23 +171,24 @@ export class DashboardComponent implements OnInit {
     });
 
     dialogRef.beforeClosed().subscribe(result => {
-      if(result != undefined){
+      if (result != undefined) {
         detallePedido.tiempoEstimado = parseInt(result.time);
         detallePedido.estadoPedidoID = 2;
         detallePedido.usuarioID = this.userID;
         console.log(detallePedido);
         this.detallePedidoService.updatePedidoDetalle(detallePedido).subscribe(
-          result=>{
+          result => {
             console.log(result);
-            this.detallesPedidos = result;
+            this.ngOnInit();
+            this.snackBar.open("El pedido ha sido actualizado","",{duration:3000,verticalPosition:'top'});
           },
-          error=>console.error(error)
+          error => console.error(error)
         );
       }
     });
   }
 
-  finalizarDetallePedido(detallePedido){
+  finalizarDetallePedido(detallePedido) {
 
     let time = "1";
 
@@ -158,14 +198,15 @@ export class DashboardComponent implements OnInit {
     });
 
     dialogRef.beforeClosed().subscribe(result => {
-      if(result != undefined){
+      if (result != undefined) {
         detallePedido.estadoPedidoID = 3;
         console.log(detallePedido);
         this.detallePedidoService.updatePedidoDetalle(detallePedido).subscribe(
-          result=>{
+          result => {
             this.detallesPedidos = result;
+            this.snackBar.open("El pedido ha sido actualizado","",{duration:3000,verticalPosition:'top'});
           },
-          error=>console.error(error)
+          error => console.error(error)
         );
       }
     });
@@ -176,7 +217,7 @@ export class DashboardComponent implements OnInit {
       (result) => {
         const dialogRef = this.dialog.open(ConsultaDialog, {
           width: '75%',
-          data: { items: result, title: pedido.codigoPedido}
+          data: { items: result, title: pedido.codigoPedido }
         });
       },
       (error) => console.error(error)
@@ -192,7 +233,7 @@ export class ComenzarDialog {
 
   constructor(
     public dialogRef: MatDialogRef<ComenzarDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -208,7 +249,7 @@ export class FinalizarDialog {
 
   constructor(
     public dialogRef: MatDialogRef<FinalizarDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -224,7 +265,39 @@ export class ConsultaDialog {
 
   constructor(
     public dialogRef: MatDialogRef<ConsultaDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+}
+
+@Component({
+  selector: 'entregar-dialog',
+  templateUrl: 'entregar-dialog.html',
+})
+export class EntregarDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<EntregarDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+}
+
+@Component({
+  selector: 'cancelar-dialog',
+  templateUrl: 'cancelar-dialog.html',
+})
+export class CancelarDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<CancelarDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onNoClick(): void {
     this.dialogRef.close();

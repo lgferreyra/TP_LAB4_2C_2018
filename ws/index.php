@@ -36,6 +36,19 @@ $app = new \Slim\App($c);
 
 //$app = new Slim\App();
 
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization, XMLHttpRequest')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
+
+
 /**
  * Step 3: Define the Slim application routes
  *
@@ -94,6 +107,7 @@ $app->post('/loginUsuario', function (Request $request, Response $response) {
         $jwt = JWT::encode($token, $key);
         $myArray["token"] = $jwt;
         $myArray["result"] = "OK";
+        $myArray["perfilID"] = $result->perfilID;
         Actividad::RegistrarLogin($result->usuarioID);
     } else {
         return $response
@@ -214,8 +228,8 @@ $app->get('/pedido', function (Request $request, Response $response, array $args
     INNER JOIN mesa m ON m.MesaID = p.mesaID
     INNER JOIN usuario u ON u.usuarioID = p.mozoID
     INNER JOIN estadoPedido ep ON ep.estadoPedidoID = p.estadoPedidoID
-    WHERE ep.estadoPedidoID <> 4
-    Order by p.fechaCreacion, p.estadoPedidoID
+    WHERE ep.estadoPedidoID < 4
+    Order by p.estadoPedidoID, p.fechaCreacion
     ");
     $consulta->execute();
     $respuesta = $consulta->fetchAll();
@@ -307,7 +321,7 @@ $app->put('/pedido/cancelar', function ($request, $response, $args) {
         
         $pdo->beginTransaction();
 
-        $sqlPedido = "UPDATE pedido SET estadoPedidoID = ?
+        $sqlPedido = "UPDATE pedido SET estadoPedidoID = ?, fechaFin= ?
                         WHERE pedidoID = ?";
 
         $consulta = $pdo->RetornarConsulta($sqlPedido);
@@ -315,16 +329,18 @@ $app->put('/pedido/cancelar', function ($request, $response, $args) {
         $consulta->execute(
             array(
                 $pedido['estadoPedidoID'],
+                date("Y-m-d H:i:s"),
                 $pedido['pedidoID']
             )
         );
 
-        $sqlDetalle = "UPDATE pedidodetalle SET estadoPedidoID = ?
+        $sqlDetalle = "UPDATE pedidodetalle SET estadoPedidoID = ?, fechaFin= ?
                         WHERE pedidoID = ?";
         $consulta = $pdo->RetornarConsulta($sqlDetalle);
         $consulta->execute(
             array(
                 $pedido['estadoPedidoID'],
+                date("Y-m-d H:i:s"),
                 $pedido['pedidoID']
             )
         );
@@ -557,8 +573,9 @@ $app->get('/pedidoDetalle/dashboard/{userID}', function (Request $request, Respo
     INNER JOIN estadopedido ep ON ep.estadoPedidoID = pd.estadoPedidoID
     WHERE u.usuarioID = ?
     AND ep.estadoPedidoID <> 4
+    AND (ep.estadoPedidoID <> 5 OR pd.fechaFin > NOW() - INTERVAL 30 MINUTE)
     AND (pd.usuarioID = ? OR pd.usuarioID is null)
-    ORDER BY p.fechaCreacion, ep.estadoPedidoID
+    ORDER BY ep.estadoPedidoID, p.fechaCreacion
     ");
     $consulta->execute(array($userID,$userID));
     $respuesta = $consulta->fetchAll();
@@ -608,6 +625,24 @@ $app->get('/mesas', function (Request $request, Response $response, array $args)
     FROM mesa
     ");
     $consulta->execute();
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/empleado/accesos', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT a.usuarioID, a.fecha, u.nombre, u.apellido, p.nombre as perfil FROM actividad a
+    inner join usuario u on u.usuarioID = a.usuarioID
+    inner join perfil p on p.perfilID = u.perfilID
+    AND a.fecha BETWEEN ? AND ?
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
     $respuesta = $consulta->fetchAll();
     $json = json_encode($respuesta);
     $response->write($json);

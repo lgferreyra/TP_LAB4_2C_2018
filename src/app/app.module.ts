@@ -23,16 +23,22 @@ import { LoginComponent } from './login/login.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { RegistroComponent } from './registro/registro.component';
-import { UserFormComponent } from './user-form/user-form.component';
 import { DomicilioService } from './_services/domicilio.service';
-import { UserListComponent } from './user-list/user-list.component';
-import { AgmCoreModule } from '@agm/core'            // @agm/core
-import { AgmDirectionModule } from 'agm-direction';
-import { DashboardComponent, ComenzarDialog, FinalizarDialog, ConsultaDialog } from './dashboard/dashboard.component';
-import { PedidoFormComponent, ResumenDialog } from './pedido-form/pedido-form.component'   // agm-direction
+import { DashboardComponent, ComenzarDialog, FinalizarDialog, ConsultaDialog, EntregarDialog, CancelarDialog } from './dashboard/dashboard.component';
+import { PedidoFormComponent, ResumenDialog } from './pedido-form/pedido-form.component'
 import { ItemMenuService } from './_services/item-menu.service';
 import { IsNullValuePipe } from './_pipe/is-null-value.pipe';
 import { DetallePedidoService } from './_services/detalle-pedido.service';
+import { ReportEmpleadoIngresosComponent } from './report-empleado-ingresos/report-empleado-ingresos.component';
+import { ReportEmpleadoOperacionesComponent } from './report-empleado-operaciones/report-empleado-operaciones.component';
+import { ReportPedidoVentasComponent } from './report-pedido-ventas/report-pedido-ventas.component';
+import { ReportPedidoDemoradosComponent } from './report-pedido-demorados/report-pedido-demorados.component';
+import { ReportPedidoCanceladosComponent } from './report-pedido-cancelados/report-pedido-cancelados.component';
+import { ReportMesaUsosComponent } from './report-mesa-usos/report-mesa-usos.component';
+import { ReportMesaFacturacionComponent } from './report-mesa-facturacion/report-mesa-facturacion.component';
+import { ReportMesaImportesComponent } from './report-mesa-importes/report-mesa-importes.component';
+import { ReportMesaTopFacturacionComponent } from './report-mesa-top-facturacion/report-mesa-top-facturacion.component';
+import { ReportMesaComentariosComponent } from './report-mesa-comentarios/report-mesa-comentarios.component';
 
 export function tokenGetter() {
   return localStorage.getItem('currentUser');
@@ -43,22 +49,34 @@ export function tokenGetter() {
     ComenzarDialog,
     FinalizarDialog,
     ResumenDialog,
-    ConsultaDialog
+    ConsultaDialog,
+    EntregarDialog,
+    CancelarDialog
   ],
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
     RegistroComponent,
-    UserFormComponent,
-    UserListComponent,
     DashboardComponent,
     PedidoFormComponent,
     ComenzarDialog,
     FinalizarDialog,
     ResumenDialog,
     ConsultaDialog,
-    IsNullValuePipe
+    EntregarDialog,
+    CancelarDialog,
+    IsNullValuePipe,
+    ReportEmpleadoIngresosComponent,
+    ReportEmpleadoOperacionesComponent,
+    ReportPedidoVentasComponent,
+    ReportPedidoDemoradosComponent,
+    ReportPedidoCanceladosComponent,
+    ReportMesaUsosComponent,
+    ReportMesaFacturacionComponent,
+    ReportMesaImportesComponent,
+    ReportMesaTopFacturacionComponent,
+    ReportMesaComentariosComponent
   ],
   imports: [
     BrowserModule,
@@ -76,10 +94,6 @@ export function tokenGetter() {
         blacklistedRoutes: ['localhost:3001/auth/']
       }
     }),
-    AgmCoreModule.forRoot({ // @agm/core
-      apiKey: 'AIzaSyA-FowwXJQObnQv6el2beO-WT9GF3KtW4U',
-    }),
-    AgmDirectionModule      // agm-direction
   ],
   providers: [
     AuthGuard,

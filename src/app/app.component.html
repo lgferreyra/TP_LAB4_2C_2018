@@ -1,41 +1,60 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top" *ngIf="logged">
     <div class="container">
         <a class="navbar-brand" routerLink="/dashboard">Comandita</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03"
-            aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
+            aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-    
+
         <div class="collapse navbar-collapse" id="navbarColor03">
             <ul class="navbar-nav mr-auto">
-                <!-- <li class="nav-item" *ngIf="logged && mozo">
-                    <a class="nav-link active" [routerLink]="['/viajes_mozo']">Viajes</a>
-                </li>
-                <li class="nav-item" *ngIf="logged && bartender">
-                    <a class="nav-link active" [routerLink]="['/viaje_form']">Viajes</a>
-                </li>
-                <li class="nav-item dropdown" *ngIf="logged && (admin || socio )">
-                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                        Administrar
+                <li class="nav-item dropdown" *ngIf="logged && socio">
+                    <a class="nav-link active dropdown-toggle" href="#" id="reportesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Empleados
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" routerLink="/user_list" *ngIf="admin || socio">Usuarios</a>
-                        <a class="dropdown-item" href="#" *ngIf="admin || socio" [routerLink]="['/viajes_board']">Viajes</a>
-                        <a class="dropdown-item" href="#" *ngIf="socio">Informes</a>
-                        <a class="dropdown-item" routerLink="/vehiculo_form" href="#" *ngIf="admin || socio">Vehiculos</a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                        <a class="dropdown-item" routerLink="/report-empleado-ingresos">Ingresos</a>
+                        <a class="dropdown-item" routerLink="/report-empleado-operaciones">Operaciones</a>
+                        <a class="dropdown-item" >Administrar</a>
                     </div>
-                </li> -->
+                </li>
+                <li class="nav-item dropdown" *ngIf="logged && socio">
+                    <a class="nav-link active dropdown-toggle" href="#" id="reportesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pedidos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                        <a class="dropdown-item" routerLink="/report-pedido-ventas">Top ventas</a>
+                        <a class="dropdown-item" routerLink="/report-pedido-demorados">Demorados</a>
+                        <a class="dropdown-item" routerLink="/report-pedido-cancelados">Cancelados</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" *ngIf="logged && socio">
+                    <a class="nav-link active dropdown-toggle" href="#" id="reportesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Mesas
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                        <a class="dropdown-item" routerLink="/report-mesa-usos">Top usos</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-top-facturacion">Top facturacion</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-importes">Top Importes</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-facturacion">Facturacion</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-comentarios">Comentarios</a>
+                    </div>
+                </li>
             </ul>
-            <button class="btn btn-outline-light my-2 my-sm-0" routerLink="/login" *ngIf="!logged">Iniciar Sesión</button>
-            <button class="btn btn-outline-light my-2 my-sm-0" routerLink="/registro" *ngIf="!logged">Registrarse</button>
+            <button class="btn btn-outline-light my-2 my-sm-0" routerLink="/login" *ngIf="!logged">Iniciar
+                Sesión</button>
+            <button class="btn btn-outline-light my-2 my-sm-0" routerLink="/registro"
+                *ngIf="!logged">Registrarse</button>
             <button class="btn btn-outline-light my-2 my-sm-0" *ngIf="logged">Mi cuenta</button>
             <button class="btn btn-outline-light my-2 my-sm-0" *ngIf="logged" (click)="logout()">Cerrar Sesión</button>
         </div>
     </div>
 </nav>
 <!-- main app container -->
-<div class="jumbotron">
+<div class="jumbotron" style="margin-bottom: 0px;background-color: whitesmoke;min-height: 100%">
     <div class="container">
         <router-outlet></router-outlet>
     </div>

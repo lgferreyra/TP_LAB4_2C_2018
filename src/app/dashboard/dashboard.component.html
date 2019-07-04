@@ -17,7 +17,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let pedido of pedidos; let i=index">
+        <tr *ngFor="let pedido of pedidos; let i=index" [ngClass]="{
+          'table-secondary':pedido.estadoPedidoID === 1,
+          'table-warning':pedido.estadoPedidoID === 2,
+          'table-success':pedido.estadoPedidoID === 3,
+          'table-danger':pedido.estadoPedidoID === 5
+        }">
           <td>{{pedido.codigoPedido}}</td>
           <td>{{pedido.codigoMesa}}</td>
           <td>{{pedido.nombreMozo}} {{pedido.apellido}}</td>
@@ -26,8 +31,19 @@
           <!-- <td>{{pedido.foto}}</td> -->
           <td>{{pedido.estado | titlecase}}</td>
           <td>
-            <button *ngIf="pedido.estadoPedidoID == 3" type="button" class="btn btn-primary btn-sm" (click)="entregaPedido(pedido)">Entregar</button>
+            <div class="dropdown">
+              <button class="btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Acciones
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a *ngIf="pedido.estadoPedidoID == 3" class="dropdown-item" (click)="entregaPedido(pedido)">Entregar</a>
+                <a class="dropdown-item" (click)="verPedido(pedido)">Ver pedido</a>
+                <a class="dropdown-item" (click)="cancelarPedido(pedido)">Cancelar</a>
+              </div>
+            </div>
+            <!-- <button *ngIf="pedido.estadoPedidoID == 3" type="button" class="btn btn-primary btn-sm" (click)="entregaPedido(pedido)">Entregar</button>
             <button type="button" class="btn btn-primary btn-sm" (click)="verPedido(pedido)">Ver pedido</button>
+            <button type="button" class="btn btn-danger btn-sm" (click)="cancelarPedido(pedido)">Cancelar</button> -->
           </td>
         </tr>
       </tbody>
@@ -50,7 +66,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let detallePedido of detallesPedidos; let j=index">
+        <tr *ngFor="let detallePedido of detallesPedidos; let j=index" [ngClass]="{
+          'table-secondary':detallePedido.estadoPedidoID === 1,
+          'table-warning':detallePedido.estadoPedidoID === 2,
+          'table-success':detallePedido.estadoPedidoID === 3,
+          'table-danger':detallePedido.estadoPedidoID === 5
+        }">
           <td>{{detallePedido.item}}</td>
           <td>{{detallePedido.cantidad}}</td>
           <td>{{detallePedido.codigo}}</td>
@@ -58,8 +79,10 @@
           <td>{{detallePedido.tiempoEstimado | isNullValue: "No especificado"}}</td>
           <td>{{detallePedido.fechaFin}}</td>
           <td>{{detallePedido.estado | titlecase}}</td>
-          <td *ngIf="detallePedido.estadoPedidoID == 1"><button type="button" class="btn btn-primary btn-sm" (click)="comenzarDetallePedido(detallePedido)">Comenzar</button></td>
-          <td *ngIf="detallePedido.estadoPedidoID == 2"><button type="button" class="btn btn-primary btn-sm" (click)="finalizarDetallePedido(detallePedido)">Finalizar</button></td>
+          <td >
+            <button *ngIf="detallePedido.estadoPedidoID == 1" type="button" class="btn btn-primary btn-sm" (click)="comenzarDetallePedido(detallePedido)">Comenzar</button>
+            <button *ngIf="detallePedido.estadoPedidoID == 2" type="button" class="btn btn-primary btn-sm" (click)="finalizarDetallePedido(detallePedido)">Finalizar</button>
+          </td>
         </tr>
       </tbody>
     </table> 

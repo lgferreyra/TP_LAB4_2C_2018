@@ -1,0 +1,38 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" style="margin-top: -40px; min-height: 700px">
+  <h3>Reporte de accesos</h3>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="desde">Desde:</label>
+      <input type="date" id="desde" class="form-control" formControlName="fechaDesde">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="hasta">Hasta:</label>
+      <input type="date" id="hasta" class="form-control" formControlName="fechaHasta">
+    </div>
+  </div>
+  <div class="form-row">
+    <button type="button" (click)="clear()" class="btn btn-light">Limpiar</button>
+    <button type="submit" [disabled]="!form.valid" class="btn btn-success">Generar</button>
+  </div>
+
+  <div class="form-row" *ngIf="results.length != 0">
+    <table class="table table-hover table-borderless overflow-auto">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Perfil</th>
+          <th scope="col">Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of results; let j=index">
+          <td>{{row.usuarioID}}</td>
+          <td>{{row.nombre}} {{row.apellido}}</td>
+          <td>{{row.perfil}}</td>
+          <td>{{row.fecha}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</form>

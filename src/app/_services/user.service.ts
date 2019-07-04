@@ -7,6 +7,7 @@ import { AuthenticationService } from './authentication.service';
 import { Usuario } from '../usuario';
 import { environment } from '../../environments/environment';
 import { Perfil } from '../perfil.enum';
+import { error } from 'util';
  
 @Injectable()
 export class UserService {
@@ -74,5 +75,17 @@ export class UserService {
                 user.perfil = Perfil[user.perfilID];
                 return user;
             });
+    }
+
+    public getReporteAccesos(fechaDesde, fechaHasta){
+        return this.http.get(this.url + "reporte/empleado/accesos", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+            .map(
+                response=>{
+                    return response.json();                    
+                },
+                error=>{
+                    console.error(error);
+                }
+            )
     }
 }
