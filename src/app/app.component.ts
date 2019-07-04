@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationEnd } from "@angular/router";
 import { AuthenticationService } from "./_services/authentication.service";
 import 'rxjs/add/operator/filter'
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   moduleId: module.id,
@@ -20,8 +21,9 @@ export class AppComponent {
   cervecero: boolean;
 
   constructor(
-    private router: Router, 
-    private authService: AuthenticationService) 
+    private router: Router,
+    private authService: AuthenticationService,
+    private spinner: NgxSpinnerService)
     {
       router.events.filter(e => e instanceof NavigationEnd).subscribe(e => {
         let token = localStorage.getItem('currentUser');
@@ -46,7 +48,13 @@ export class AppComponent {
   logout(){
     this.authService.logout();
     this.logged = false;
-    this.router.navigate(['/home']);
+    this.spinner.show();
+
+    setTimeout(() => {
+        /** spinner ends after 5 seconds */
+        this.spinner.hide();
+        this.router.navigate(['/home']);
+    }, 500);
   }
 
   getProfile(id_profile){

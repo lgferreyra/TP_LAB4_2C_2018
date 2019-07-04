@@ -36,9 +36,9 @@
                 Acciones
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a *ngIf="pedido.estadoPedidoID == 3" class="dropdown-item" (click)="entregaPedido(pedido)">Entregar</a>
-                <a class="dropdown-item" (click)="verPedido(pedido)">Ver pedido</a>
-                <a class="dropdown-item" (click)="cancelarPedido(pedido)">Cancelar</a>
+                <button *ngIf="pedido.estadoPedidoID == 3" class="dropdown-item" type="button" (click)="entregaPedido(pedido)">Entregar</button>
+                <button class="dropdown-item" type="button" (click)="verPedido(pedido)">Ver pedido</button>
+                <button class="dropdown-item" type="button" (click)="cancelarPedido(pedido)">Cancelar</button>
               </div>
             </div>
             <!-- <button *ngIf="pedido.estadoPedidoID == 3" type="button" class="btn btn-primary btn-sm" (click)="entregaPedido(pedido)">Entregar</button>

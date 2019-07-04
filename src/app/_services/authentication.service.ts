@@ -3,13 +3,13 @@ import { Http, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import { environment } from "./../../environments/environment";
 import { JwtHelperService } from '@auth0/angular-jwt';
-import 'rxjs/add/operator/map'
- 
+import 'rxjs/add/operator/map';
+
 @Injectable()
 export class AuthenticationService {
     public token: string;
     public url: string = environment.apiUrl;
- 
+
     constructor (
         private http: Http,
         private jwtHelperService: JwtHelperService 
@@ -18,7 +18,7 @@ export class AuthenticationService {
         var currentUser = JSON.parse(localStorage.getItem('currentUser'));
         this.token = currentUser && currentUser.token;
     }
- 
+
     login(email: string, password: string): Observable<boolean> {
         let data: FormData = new FormData();
         data.append("email", email);
@@ -32,10 +32,10 @@ export class AuthenticationService {
                 if (token != null) {
                     // set token property
                     this.token = token;
- 
+
                     // store username and jwt token in local storage to keep user logged in between page refreshes
                     localStorage.setItem('currentUser', JSON.stringify({ email: email, perfilID: perfilID,token: token }));
- 
+
                     // return true to indicate successful login
                     return true;
                 } else {
@@ -44,7 +44,7 @@ export class AuthenticationService {
                 }
             });
     }
- 
+
     logout(): void {
         // clear token remove user from local storage to log user out
         this.token = null;

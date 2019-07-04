@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AppComponent } from "./../app.component";
  
 import { AuthenticationService } from '../_services/authentication.service';
+import { NgxSpinnerService } from 'ngx-spinner';
  
 @Component({
     moduleId: module.id,
@@ -17,16 +18,15 @@ export class LoginComponent implements OnInit {
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
-        private app: AppComponent) { }
+        private spinner: NgxSpinnerService) { }
  
     ngOnInit() {
-        // reset login status
-        //this.authenticationService.logout();
-        //this.app.logout();
+
     }
  
     login() {
         this.loading = true;
+        this.spinner.show();
         this.authenticationService.login(this.model.email, this.model.password)
             .subscribe(result => {
                 if (result === true) {
@@ -42,7 +42,10 @@ export class LoginComponent implements OnInit {
               console.log(error);
               this.error = 'Correo electrónico o contraseña incorrectos';
               this.loading = false;
-            });
+              this.spinner.hide();
+            },
+            ()=>this.spinner.hide()
+        );
     }
 
     mockUser(email : String, password : String){
