@@ -663,7 +663,18 @@ $app->get('/reporte/empleado/operaciones', function (Request $request, Response 
     GROUP BY s.sectorID, s.nombre
     ");
     $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
-    $respuesta = $consulta->fetchAll();
+    $respuesta["bySector"] = $consulta->fetchAll();
+
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT CONCAT(u.nombre, ' ', u.apellido) as nombre, COUNT(1) as operaciones FROM pedidoDetalle pd
+    INNER JOIN usuario u ON u.usuarioID = pd.usuarioID
+    WHERE (pd.estadoPedidoID = 4 OR pd.estadoPedidoID = 3)
+    AND pd.fechaFin BETWEEN ? AND ?
+    GROUP BY nombre
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["byEmpleado"] = $consulta->fetchAll();
+
     $json = json_encode($respuesta);
     $response->write($json);
     return $response;

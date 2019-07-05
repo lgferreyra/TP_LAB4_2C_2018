@@ -83,16 +83,24 @@ export class PedidoService {
     return this.http.get(this.url + "reporte/empleado/operaciones", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
       .map(
         response=>{
-            let labels = [];
-            let data = [];
+            let labelsBySector = [];
+            let dataBySector = [];
+            let labelsByEmpleado = [];
+            let dataByEmpleado = [];
             let json = response.json();
 
-            json.forEach(element => {
-              labels.push(element.nombre);
-              data.push(element.operaciones);
+            json.bySector.forEach(element => {
+              labelsBySector.push(element.nombre);
+              dataBySector.push(element.operaciones);
             });
 
-            return {data: data, labels: labels};                    
+            json.byEmpleado.forEach(element => {
+              labelsByEmpleado.push(element.nombre);
+              dataByEmpleado.push(element.operaciones);
+            });
+
+            return {bySector: {data: dataBySector, labels: labelsBySector},
+                    byEmpleado: {data: dataByEmpleado, labels: labelsByEmpleado}};
         },
         error=>{
             console.error(error);

@@ -4,6 +4,7 @@ import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label } from 'ng2-charts';
 import { PedidoService } from '../_services/pedido.service';
 import { FormBuilder, Validators } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-report-empleado-operaciones',
@@ -12,11 +13,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class ReportEmpleadoOperacionesComponent implements OnInit {
   
-  public bySectorLabels = [];
-  public bySectorData = [];
-  
   public barChartOptions: ChartOptions = {
     responsive: true,
+    maintainAspectRatio : false,
     // We use these empty structures as placeholders for dynamic theming.
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {
@@ -26,18 +25,26 @@ export class ReportEmpleadoOperacionesComponent implements OnInit {
       }
     }
   };
-  public barChartLabels: Label[] = this.bySectorLabels;
   public barChartType: ChartType = 'bar';
   public barChartLegend = false;
   public barChartPlugins = [pluginDataLabels];
+  
+  //BySector
+  public barChartLabelsBySector: Label[] = [];
+  public barChartDataBySector: ChartDataSets[] = [
+    { data: [], label: 'Operaciones' }
+  ];
 
-  public barChartData: ChartDataSets[] = [
-    { data: this.bySectorData, label: 'Operaciones' }
+  //ByEmpleado
+  public barChartLabelsByEmpleado: Label[] = [];
+  public barChartDataByEmpleado: ChartDataSets[] = [
+    { data: [], label: 'Operaciones' }
   ];
 
   constructor(
     private pedidoService: PedidoService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private spinner: NgxSpinnerService
   ) { }
 
   form = this.fb.group({
@@ -50,23 +57,21 @@ export class ReportEmpleadoOperacionesComponent implements OnInit {
   }
 
   onSubmit() {
+    this.spinner.show();
     this.pedidoService.reporteEmpleadoOperaciones(this.form.get("fechaDesde").value, this.form.get("fechaHasta").value + " 23:59:59").subscribe(
       result => {
         console.log(result);
-        this.bySectorLabels = result.labels;
-        this.bySectorData = result.data;
-
-        this.barChartLabels = this.bySectorLabels;
-        this.barChartData = [{ data: this.bySectorData, label: 'Operaciones' }];
+        this.barChartLabelsBySector = result.bySector.labels;
+        this.barChartDataBySector = [{ data: result.bySector.data, label: 'Operaciones' }];
+        this.barChartLabelsByEmpleado = result.byEmpleado.labels;
+        this.barChartDataByEmpleado = [{ data: result.byEmpleado.data, label: 'Operaciones' }];
       },
-      error => console.error(error)
+      error => {
+        console.error(error);
+        this.spinner.hide();
+      },
+      () => this.spinner.hide()
     );
-  }
-
-  clear(){
-    this.form.reset();
-    this.bySectorLabels = [];
-    this.bySectorData = [];
   }
 
   // events
