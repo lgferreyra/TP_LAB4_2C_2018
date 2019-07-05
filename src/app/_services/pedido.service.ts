@@ -78,4 +78,25 @@ export class PedidoService {
       (error)=>console.error(error)
     );
   }
+
+  reporteEmpleadoOperaciones(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/empleado/operaciones", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labels = [];
+            let data = [];
+            let json = response.json();
+
+            json.forEach(element => {
+              labels.push(element.nombre);
+              data.push(element.operaciones);
+            });
+
+            return {data: data, labels: labels};                    
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
 }

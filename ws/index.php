@@ -649,6 +649,26 @@ $app->get('/reporte/empleado/accesos', function (Request $request, Response $res
     return $response;
 });
 
+$app->get('/reporte/empleado/operaciones', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT s.sectorID, s.nombre, COUNT(1) as operaciones FROM pedidoDetalle pd
+    INNER JOIN itemmenu im ON im.itemMenuID = pd.itemMenuID
+    INNER JOIN sector s ON s.sectorID = im.sectorID
+    WHERE (pd.estadoPedidoID = 4 OR pd.estadoPedidoID = 3)
+    AND pd.fechaFin BETWEEN ? AND ?
+    GROUP BY s.sectorID, s.nombre
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
 /**
  * Step 4: Run the Slim application
  *
