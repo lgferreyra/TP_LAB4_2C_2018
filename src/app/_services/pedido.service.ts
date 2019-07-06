@@ -107,4 +107,72 @@ export class PedidoService {
         }
     );
   }
+
+  reportePedidoVentas(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/pedido/ventas", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labelsMas = [];
+            let dataMas = [];
+            let labelsMenos = [];
+            let dataMenos = [];
+            let json = response.json();
+
+            json.mas.forEach(element => {
+              labelsMas.push(element.nombre);
+              dataMas.push(element.cantidad);
+            });
+
+            json.menos.forEach(element => {
+              labelsMenos.push(element.nombre);
+              dataMenos.push(element.cantidad);
+            });
+
+            return {mas: {data: dataMas, labels: labelsMas},
+                    menos: {data: dataMenos, labels: labelsMenos}};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
+
+  reportePedidoDemorados(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/pedido/demorados", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labels = [];
+            let cantidad = [];
+            let demorados = [];
+            let json = response.json();
+
+            json.forEach(element => {
+              labels.push(element.nombre);
+              cantidad.push(element.cantidad);
+              demorados.push(element.demorados);
+            });
+
+            return {labels:labels, data:[{ data: cantidad, label: 'Cantidad' },{ data: demorados, label: 'Demorados' }]};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
+
+  reportePedidoCancelados(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/pedido/cancelados", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let json = response.json();
+            let completados:number = json[0].completados;
+            let cancelados:number = json[0].cancelados;
+            let data:number[] = [completados,cancelados]
+            return {labels:['Completados', 'Cancelados'], data:data};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
 }

@@ -680,6 +680,108 @@ $app->get('/reporte/empleado/operaciones', function (Request $request, Response 
     return $response;
 });
 
+$app->get('/reporte/pedido/ventas', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT im.nombre, COUNT(IF((pd.estadoPedidoID=3 OR pd.estadoPedidoID=4)AND pd.fechaFin BETWEEN ? AND ?,1, NULL)) as cantidad FROM itemmenu im
+    LEFT JOIN pedidodetalle pd ON im.itemMenuID = pd.itemMenuID 
+    GROUP BY im.nombre
+    ORDER BY cantidad DESC
+    LIMIT 5
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["mas"] = $consulta->fetchAll();
+
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT im.nombre, COUNT(IF((pd.estadoPedidoID=3 OR pd.estadoPedidoID=4) AND pd.fechaFin BETWEEN ? AND ?,1, NULL)) as cantidad FROM itemmenu im
+    LEFT JOIN pedidodetalle pd ON im.itemMenuID = pd.itemMenuID 
+    GROUP BY im.nombre
+    ORDER BY cantidad ASC
+    LIMIT 5
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["menos"] = $consulta->fetchAll();
+
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+
+$app->get('/reporte/pedido/demorados', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+
+    SELECT s.nombre,
+    COUNT(IF((pd.estadoPedidoID=3 OR pd.estadoPedidoID=4) AND pd.fechaFin BETWEEN ? AND ?,1, NULL)) as cantidad,
+    COUNT(IF((pd.estadoPedidoID=3 OR pd.estadoPedidoID=4) AND pd.fechaFin BETWEEN ? AND ? AND pd.fechaFin NOT BETWEEN pd.fechaInicio AND DATE_ADD(pd.fechaInicio,INTERVAL pd.tiempoEstimado MINUTE),1, NULL)) as demorados
+    FROM sector s 
+    LEFT JOIN itemmenu im ON im.sectorID = s.sectorID
+    LEFT JOIN pedidodetalle pd ON im.itemMenuID = pd.itemMenuID 
+    GROUP BY s.nombre
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"],$params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/pedido/cancelados', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT
+    COUNT(IF(p.estadoPedidoID=4 AND p.fechaFin BETWEEN ? AND ?,1, NULL)) as completados,
+    COUNT(IF(p.estadoPedidoID=5 AND p.fechaCreacion BETWEEN ? AND ?,1, NULL)) as cancelados
+    FROM pedido p
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"],$params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/mesa/usos', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT m.codigo, COUNT(IF(p.estadoPedidoID=4 AND p.fechaFin BETWEEN ? AND ?,1, NULL)) as usos 
+    FROM mesa m
+    LEFT JOIN pedido p ON m.MesaID = p.mesaID 
+    GROUP BY m.codigo
+    ORDER BY usos DESC
+    LIMIT 5
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["mas"] = $consulta->fetchAll();
+
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT m.codigo, COUNT(IF((p.estadoPedidoID=3 OR p.estadoPedidoID=4) AND p.fechaFin BETWEEN ? AND ?,1, NULL)) as usos 
+    FROM mesa m
+    LEFT JOIN pedido p ON m.MesaID = p.mesaID 
+    GROUP BY m.codigo
+    ORDER BY usos ASC
+    LIMIT 5
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["menos"] = $consulta->fetchAll();
+
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
 /**
  * Step 4: Run the Slim application
  *
