@@ -17,7 +17,7 @@ export class ReportMesaUsosComponent implements OnInit {
     responsive: true,
     maintainAspectRatio : false,
     // We use these empty structures as placeholders for dynamic theming.
-    scales: { xAxes: [{}], yAxes: [{}] },
+    scales: { xAxes: [{}], yAxes: [{ticks:{beginAtZero : true}}] },
     plugins: {
       datalabels: {
         anchor: 'end',
@@ -26,7 +26,7 @@ export class ReportMesaUsosComponent implements OnInit {
     }
   };
   public barChartType: ChartType = 'bar';
-  public barChartLegend = false;
+  public barChartLegend = true;
   public barChartPlugins = [pluginDataLabels];
   
   //Mas

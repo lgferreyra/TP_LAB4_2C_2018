@@ -1,0 +1,38 @@
+<table *ngIf="pedidoDetalles.length != 0" class="table">
+  <thead>
+    <tr>
+      <th scope="col">Detalle</th>
+      <th scope="col">Cantidad</th>
+      <th scope="col">Precio Unitario</th>
+      <th scope="col">Inicio</th>
+      <th scope="col">Estimado</th>
+      <th scope="col">Estado</th>
+      <th scope="col">Precio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let pedidoDetalle of pedidoDetalles; let j=index" [ngClass]="{
+        'table-secondary':pedidoDetalle.estadoPedidoID === 1,
+        'table-warning':pedidoDetalle.estadoPedidoID === 2,
+        'table-success':pedidoDetalle.estadoPedidoID === 3,
+        'table-danger':pedidoDetalle.estadoPedidoID === 5
+      }">
+      <td>{{pedidoDetalle.item}}</td>
+      <td>{{pedidoDetalle.cantidad}}</td>
+      <td>${{pedidoDetalle.precioUnitario}}</td>
+      <td>{{pedidoDetalle.fechaInicio}}</td>
+      <td>{{pedidoDetalle.tiempoEstimado | isNullValue: "No especificado"}}</td>
+      <td>{{pedidoDetalle.estado | titlecase}}</td>
+      <td>${{pedidoDetalle.precio}}</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <th>TOTAL: </th>
+      <th>${{total}}</th>
+    </tr>
+  </tbody>
+</table>

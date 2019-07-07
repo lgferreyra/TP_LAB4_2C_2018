@@ -18,21 +18,33 @@ export class PedidoService {
     return this.http.get(this.url + "pedido/consulta/" + pedido + "/" + mesa)
       .map((response)=>{
         return response.json();
-      });
+      },
+      (error)=>console.error(error));
+  }
+
+  existePedido(mesa: string, pedido: string): Observable<any> {
+    
+    return this.http.get(this.url + "pedido/existe/" + pedido + "/" + mesa)
+      .map((response)=>{
+        return response.json();
+      },
+      (error)=>console.error(error));
   }
 
   getPedidosByEstado(estadoPedidoID: string): Observable<any> {
     return this.http.get(this.url + "pedido/estado/" + estadoPedidoID)
       .map((response)=>{
         return response.json();
-      });
+      },
+      (error)=>console.error(error));
   }
 
   getPedidos(): Observable<any> {
     return this.http.get(this.url + "pedido")
       .map((response)=>{
         return response.json();
-      });
+      },
+      (error)=>console.error(error));
   }
 
   
@@ -40,14 +52,16 @@ export class PedidoService {
     return this.http.get(this.url + "pedidoDetalle/dashboard/" + userID)
       .map((response)=>{
         return response.json();
-      });
+      },
+      (error)=>console.error(error));
   }
 
   getDetallePedido(pedidoID: string): Observable<any> {
     return this.http.get(this.url + "pedidoDetalle/pedido/" + pedidoID)
       .map((response)=>{
         return response.json();
-      });
+      },
+      (error)=>console.error(error));
   }
 
   savePedido(pedido: any){
@@ -76,6 +90,15 @@ export class PedidoService {
         return response.statusText;
       },
       (error)=>console.error(error)
+    );
+  }
+
+  checkEncuenta(pedidoID){
+    return this.http.get(this.url + "pedido/encuenta/check/" + pedidoID).map(
+      response=>{
+        return response.json();
+      },
+      error=>console.error(error)
     );
   }
 

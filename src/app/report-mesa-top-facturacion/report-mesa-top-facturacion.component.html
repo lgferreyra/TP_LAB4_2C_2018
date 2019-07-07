@@ -1,3 +1,52 @@
-<p>
-  report-mesa-top-facturacion works!
-</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" style="margin-top: -40px; min-height: 600px;">
+    <h3>Reporte top facturacion de mesas</h3>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="desde">Desde:</label>
+        <input type="date" id="desde" class="form-control" formControlName="fechaDesde">
+      </div>
+      <div class="form-group col-md-3">
+        <label for="hasta">Hasta:</label>
+        <input type="date" id="hasta" class="form-control" formControlName="fechaHasta">
+      </div>
+    </div>
+    <div class="form-row">
+      <button type="submit" [disabled]="!form.valid" class="btn btn-success">Generar</button>
+    </div>
+    <mat-tab-group>
+      <mat-tab label="Más facturan">
+        <ng-template matTabContent>
+          <div class="reporte">
+            <div *ngIf="barChartLabelsMas.length == 0">
+              No hay datos
+            </div>
+            <div *ngIf="barChartLabelsMas.length != 0">
+              <div>
+                <canvas baseChart [datasets]="barChartDataMas" [labels]="barChartLabelsMas"
+                  [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType" height="350">
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Menos facturan">
+        <ng-template matTabContent>
+          <div class="reporte">
+            <div *ngIf="barChartLabelsMenos.length == 0">
+              No hay datos
+            </div>
+            <div *ngIf="barChartLabelsMenos.length != 0">
+              <div>
+                <canvas baseChart [datasets]="barChartDataMenos" [labels]="barChartLabelsMenos"
+                  [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend"
+                  [chartType]="barChartType" height="350">
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </form>

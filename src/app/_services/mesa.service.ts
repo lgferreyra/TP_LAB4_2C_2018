@@ -49,4 +49,76 @@ export class MesaService {
         }
     );
   }
+
+  reporteMesaTopFacturaciones(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/mesa/topfacturaciones", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labelsMas = [];
+            let dataMas = [];
+            let labelsMenos = [];
+            let dataMenos = [];
+            let json = response.json();
+
+            json.mas.forEach(element => {
+              labelsMas.push(element.codigo);
+              dataMas.push(element.facturado);
+            });
+
+            json.menos.forEach(element => {
+              labelsMenos.push(element.codigo);
+              dataMenos.push(element.facturado);
+            });
+
+            return {mas: {data: dataMas, labels: labelsMas},
+                    menos: {data: dataMenos, labels: labelsMenos}};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
+
+  reporteMesaImportes(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/mesa/importes", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labels = [];
+            let data = [];
+            let json = response.json();
+
+            labels.push("Mesa máximo: " + json[0].mesa);
+            data.push(json[0].total);
+
+            labels.push("Mesa Mínimo: " + json[1].mesa);
+            data.push(json[1].total);
+
+            return {labels:labels, data:[{ data: data[0], label: 'Importe' },{ data: data[1], label: 'Importe' }]};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
+
+  reporteMesaFacturaciones(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/mesa/facturaciones", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labels = [];
+            let data = [];
+            let json = response.json();
+
+            json.forEach(element => {
+              labels.push(element.codigo);
+              data.push(element.facturado);
+            });
+
+            return {data: data, labels: labels};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
 }

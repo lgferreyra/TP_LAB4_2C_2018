@@ -32,7 +32,7 @@ export class ReportPedidoCanceladosComponent implements OnInit {
   public pieChartLabels: Label[] = [];
   public pieChartData: number[] = [];
   public pieChartType: ChartType = 'pie';
-  public pieChartLegend = true;
+  public pieChartLegend = false;
   public pieChartPlugins = [pluginDataLabels];
   public pieChartColors = [
     {

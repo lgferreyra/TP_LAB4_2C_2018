@@ -17,11 +17,13 @@ import { ReportMesaFacturacionComponent } from './report-mesa-facturacion/report
 import { ReportMesaImportesComponent } from './report-mesa-importes/report-mesa-importes.component';
 import { ReportMesaTopFacturacionComponent } from './report-mesa-top-facturacion/report-mesa-top-facturacion.component';
 import { ReportMesaUsosComponent } from './report-mesa-usos/report-mesa-usos.component';
+import { ConsultaPedidoComponent } from './consulta-pedido/consulta-pedido.component';
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
   { path: "home", component: HomeComponent },
   { path: "registro", component: RegistroComponent },
+  { path: "consultaPedido/:pedido/:mesa", component: ConsultaPedidoComponent },
   { 
     path: 'pedidoForm', 
     component: PedidoFormComponent, 

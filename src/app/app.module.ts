@@ -41,6 +41,7 @@ import { ReportMesaFacturacionComponent } from './report-mesa-facturacion/report
 import { ReportMesaImportesComponent } from './report-mesa-importes/report-mesa-importes.component';
 import { ReportMesaTopFacturacionComponent } from './report-mesa-top-facturacion/report-mesa-top-facturacion.component';
 import { ReportMesaComentariosComponent } from './report-mesa-comentarios/report-mesa-comentarios.component';
+import { ConsultaPedidoComponent } from './consulta-pedido/consulta-pedido.component';
 
 export function tokenGetter() {
   return localStorage.getItem('currentUser');
@@ -78,7 +79,8 @@ export function tokenGetter() {
     ReportMesaFacturacionComponent,
     ReportMesaImportesComponent,
     ReportMesaTopFacturacionComponent,
-    ReportMesaComentariosComponent
+    ReportMesaComentariosComponent,
+    ConsultaPedidoComponent
   ],
   imports: [
     BrowserModule,

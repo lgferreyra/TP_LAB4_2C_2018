@@ -183,16 +183,56 @@ $app->get('/pedido/consulta/{pedido}/{mesa}', function (Request $request, Respon
 
     $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
     $consulta = $objetoAccesoDato->RetornarConsulta("
-    select pd.* from pedido p 
-    inner join pedidoDetalle pd on pd.pedidoID = p.pedidoID
-    inner join itemMenu im on im.itemmenuID = pd.itemmenuID
-    inner join mesa m on m.mesaID = p.mesaID
-    where p.codigo = ?
-    and m.codigo = ?
+    SELECT pd.pedidoDetalleID, pd.itemMenuID, im.nombre AS item, pd.cantidad, pd.fechaInicio, m.codigo, pd.precio * pd.cantidad as precio,
+    pd.fechaFin, pd.tiempoEstimado, pd.estadoPedidoID, ep.nombre AS estado, pd.pedidoID, p.codigo, pd.precio as precioUnitario, p.nombreCliente
+    FROM pedido p
+    INNER JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+    INNER JOIN itemmenu im ON im.itemMenuID = pd.itemMenuID
+    INNER JOIN estadopedido ep ON ep.estadoPedidoID = pd.estadoPedidoID
+    INNER JOIN mesa m ON m.MesaID = p.mesaID
+    WHERE p.codigo = ?
+    AND m.codigo = ?
+    ORDER BY pd.pedidoDetalleID
     ");
     $consulta->execute(array($pedido, $mesa));
     $respuesta = $consulta->fetchAll();
     $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/pedido/existe/{pedido}/{mesa}', function (Request $request, Response $response, array $args) {
+
+    $mesa = $args['mesa'];
+    $pedido = $args['pedido'];
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT COUNT(IF(p.pedidoID, 1, 0)) as existe
+    FROM pedido p
+    INNER JOIN mesa m ON m.MesaID = p.mesaID
+    WHERE p.estadoPedido <> 5, p.codigo = ? AND m.codigo = ?
+    ");
+    $consulta->execute(array($pedido, $mesa));
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta[0]);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/pedido/encuenta/check/{pedidoID}', function (Request $request, Response $response, array $args) {
+
+    $pedidoID = $args['pedidoID'];
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT COUNT(IF(e.pedidoID, 1, 0)) as existe
+    FROM encuesta e
+    WHERE e.pedidoID = ?
+    ");
+    $consulta->execute(array($pedidoID));
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta[0]);
     $response->write($json);
     return $response;
 });
@@ -777,6 +817,98 @@ $app->get('/reporte/mesa/usos', function (Request $request, Response $response, 
     ");
     $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
     $respuesta["menos"] = $consulta->fetchAll();
+
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/mesa/topfacturaciones', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT m.codigo, SUM(IF((p.estadoPedidoID = 4) AND p.fechaFin BETWEEN ? AND ?,pd.precio * pd.cantidad,0)) as facturado
+    FROM mesa m
+    LEFT JOIN pedido p ON p.mesaID = m.MesaID
+    LEFT JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+    GROUP BY m.codigo
+    ORDER BY facturado DESC
+    LIMIT 5
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["mas"] = $consulta->fetchAll();
+
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT m.codigo, SUM(IF((p.estadoPedidoID = 4) AND p.fechaFin BETWEEN ? AND ?,pd.precio * pd.cantidad,0)) as facturado
+    FROM mesa m
+    LEFT JOIN pedido p ON p.mesaID = m.MesaID
+    LEFT JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+    GROUP BY m.codigo
+    ORDER BY facturado ASC
+    LIMIT 5
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta["menos"] = $consulta->fetchAll();
+
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/mesa/importes', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    (
+        SELECT p.codigo as pedido, m.codigo as mesa, SUM(pd.precio * pd.cantidad) as total
+        FROM pedido p
+        INNER JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+        INNER JOIN mesa m ON m.MesaID = p.mesaID
+        WHERE p.estadoPedidoID = 4
+        AND p.fechaFin BETWEEN ? AND ?
+        GROUP BY pedido, mesa
+        ORDER BY total DESC
+        LIMIT 1
+    )
+    UNION
+    (
+        SELECT p.codigo as pedido, m.codigo as mesa, SUM(pd.precio * pd.cantidad) as total
+        FROM pedido p
+        INNER JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+        INNER JOIN mesa m ON m.MesaID = p.mesaID
+        WHERE p.estadoPedidoID = 4
+        AND p.fechaFin BETWEEN ? AND ?
+        GROUP BY pedido, mesa
+        ORDER BY total ASC
+        LIMIT 1
+    )
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"],$params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/mesa/facturaciones', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT m.codigo, SUM(IF((p.estadoPedidoID = 4) AND p.fechaFin BETWEEN ? AND ?,pd.precio * pd.cantidad,0)) as facturado
+    FROM mesa m
+    LEFT JOIN pedido p ON p.mesaID = m.MesaID
+    LEFT JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+    GROUP BY m.codigo
+    ORDER BY m.MesaID
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta = $consulta->fetchAll();
 
     $json = json_encode($respuesta);
     $response->write($json);
