@@ -121,4 +121,33 @@ export class MesaService {
         }
     );
   }
+
+  reporteMesaComentarios(fechaDesde, fechaHasta){
+    return this.http.get(this.url + "reporte/mesa/comentarios", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+      .map(
+        response=>{
+            let labels = [];
+            let cocinero = {data:[],label:"Cocinero"};
+            let restaurante = {data:[],label:"Restaurante"};
+            let mesa = {data:[],label:"Mesa"};
+            let mozo = {data:[],label:"Mozo"};
+            let promedio = {data:[],label:"Promedio"};
+            let json = response.json();
+
+            json.forEach(element => {
+              labels.push(element.codigo);
+              cocinero.data.push(element.cocinero);
+              restaurante.data.push(element.restaurante);
+              mesa.data.push(element.mesa);
+              mozo.data.push(element.mozo);
+              promedio.data.push(element.promedio);
+            });
+
+            return {data: [cocinero, restaurante, mesa, mozo, promedio], labels: labels};
+        },
+        error=>{
+            console.error(error);
+        }
+    );
+  }
 }

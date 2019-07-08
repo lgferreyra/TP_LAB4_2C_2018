@@ -146,32 +146,155 @@ $app->get('/usuario[/{id}]', function ($request, $response, $args) {
     return $response;
 });
 
-$app->get('/usuarios[/{perfil}]', function ($request, $response, $args) {
-    if (isset($args['perfil'])) {
-        $respuesta = Usuario::TraerTodosLosUsuarios($args['perfil']);
-    } else {
-        $respuesta = Usuario::TraerTodosLosUsuarios();
-    }
-    $usuariosJson = json_encode($respuesta);
-    $response->write($usuariosJson);
+// $app->get('/usuarios[/{perfil}]', function ($request, $response, $args) {
+//     if (isset($args['perfil'])) {
+//         $respuesta = Usuario::TraerTodosLosUsuarios($args['perfil']);
+//     } else {
+//         $respuesta = Usuario::TraerTodosLosUsuarios();
+//     }
+//     $usuariosJson = json_encode($respuesta);
+//     $response->write($usuariosJson);
+//     return $response;
+// });
+
+$app->post('/usuario/crear', function ($request, $response, $args) {
+
+    $idInsertado = 0;
+    $usuario = $request->getParsedBody();
+    $pdo = AccesoDatos::dameUnObjetoAcceso();
+    
+
+    $sql = "INSERT INTO usuario(nombre, apellido, codigo, email, fecha, perfilID, borrado, suspendido, clave) 
+    VALUES (?,?,?,?,?,?,?,?,?)";
+
+    $consulta = $pdo->RetornarConsulta($sql);
+
+    $consulta->execute(
+        array(
+            $usuario['nombre'],
+            $usuario['apellido'],
+            $usuario['apellido'],
+            $usuario['email'],
+            $usuario['fecha'],
+            $usuario['perfilID'],
+            0,
+            0,
+            $usuario['password']
+        )
+    );
+
+    $idInsertado = $pdo->RetornarUltimoIdInsertado();
+    
+    $json = json_encode($idInsertado);
+
+    $response->write($json);
     return $response;
 });
 
-$app->post('/usuario/crear', function ($request, $response, $args) {
-    $parsedBody = $request->getParsedBody();
-    var_dump($parsedBody);
-    //var_dump($parsedBody);
-    $idInserted = Usuario::InsertarUsuario($parsedBody);
-    //ob_start();
-    //$result = ob_get_clean();
-    /*if($idInserted===null){
-        header('HTTP/1.0 404 Not Found');
-    } else {
-        $response->write($idInserted);
-        return $response;
-    }*/
-    var_dump($idInserted);
-    $response->write($idInserted);
+$app->get('/usuarios', function (Request $request, Response $response, array $args) {
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT u.usuarioID, u.nombre, u.apellido, u.email, u.fecha, u.borrado, u.suspendido, p.nombre as perfil, u.perfilID
+    FROM usuario u
+    INNER JOIN perfil p ON p.perfilID = u.perfilID
+    WHERE u.borrado <> 1
+    ORDER BY u.usuarioID
+    ");
+    $consulta->execute();
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->put('/usuario/eliminar', function ($request, $response, $args) {
+
+    $usuario = $request->getParsedBody();
+
+    try {
+        $pdo = AccesoDatos::dameUnObjetoAcceso();
+        
+        $pdo->beginTransaction();
+
+        $sqlUsuario = "UPDATE usuario SET borrado=1 
+        WHERE usuarioID=?";
+
+        $consulta = $pdo->RetornarConsulta($sqlUsuario);
+
+        $consulta->execute(
+            array(
+                $usuario['usuarioID']
+            )
+        );
+        
+        
+        $pdo->commit();
+    }
+    catch (Exception $e) {
+        echo $e->getMessage();
+
+        $pdo->rollBack();
+
+        $response->error_log('Hubo un error :(');
+    }
+
+    $json = json_encode($usuario);
+    $response->write($json);
+    return $response;
+});
+
+$app->put('/usuario/suspender', function ($request, $response, $args) {
+
+    $usuario = $request->getParsedBody();
+
+    try {
+        $pdo = AccesoDatos::dameUnObjetoAcceso();
+        
+        $pdo->beginTransaction();
+
+        $sqlUsuario = "UPDATE usuario SET suspendido=?
+        WHERE usuarioID=?";
+
+        $consulta = $pdo->RetornarConsulta($sqlUsuario);
+
+        $consulta->execute(
+            array(
+                $usuario['suspendido'],
+                $usuario['usuarioID']
+            )
+        );
+        
+        $pdo->commit();
+    }
+    catch (Exception $e) {
+        echo $e->getMessage();
+
+        $pdo->rollBack();
+
+        $response->error_log('Hubo un error :(');
+    }
+
+    $json = json_encode($usuario);
+    $response->write($json);
+    return $response;
+});
+
+//PERFIL
+
+$app->get('/perfiles', function (Request $request, Response $response, array $args) {
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT perfilID, nombre FROM perfil
+    WHERE perfilID > 1
+    ORDER BY perfilID
+    ");
+    $consulta->execute();
+    $respuesta = $consulta->fetchAll();
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
 });
 
 //PEDIDO
@@ -211,7 +334,7 @@ $app->get('/pedido/existe/{pedido}/{mesa}', function (Request $request, Response
     SELECT COUNT(IF(p.pedidoID, 1, 0)) as existe
     FROM pedido p
     INNER JOIN mesa m ON m.MesaID = p.mesaID
-    WHERE p.estadoPedido <> 5, p.codigo = ? AND m.codigo = ?
+    WHERE p.estadoPedidoID <> 5 AND p.codigo = ? AND m.codigo = ?
     ");
     $consulta->execute(array($pedido, $mesa));
     $respuesta = $consulta->fetchAll();
@@ -233,6 +356,52 @@ $app->get('/pedido/encuenta/check/{pedidoID}', function (Request $request, Respo
     $consulta->execute(array($pedidoID));
     $respuesta = $consulta->fetchAll();
     $json = json_encode($respuesta[0]);
+    $response->write($json);
+    return $response;
+});
+
+$app->post('/pedido/encuesta', function ($request, $response, $args) {
+    
+    try {
+        $idInsertado = 0;
+        $encuesta = $request->getParsedBody();
+        $pdo = AccesoDatos::dameUnObjetoAcceso();
+        
+        $pdo->beginTransaction();
+
+        $sqlEncuesta = "INSERT INTO encuesta(pedidoID, fecha, mesaValor, restauranteValor, mozoValor, cocineroValor, comentario) 
+        VALUES (?,?,?,?,?,?,?)";
+
+        $consulta = $pdo->RetornarConsulta($sqlEncuesta);
+
+        $consulta->execute(
+            array(
+                $encuesta['pedidoID'],
+                date("Y-m-d H:i:s"),
+                $encuesta['mesa'],
+                $encuesta['restaurante'],
+                $encuesta['mozo'],
+                $encuesta['cocinero'],
+                $encuesta['comentarios']
+            )
+        );
+
+        $idInsertado = $pdo->RetornarUltimoIdInsertado();
+        
+        $pdo->commit();
+        
+        $json = json_encode($idInsertado);
+
+    }
+    catch (Exception $e) {
+        echo $e->getMessage();
+
+        $pdo->rollBack();
+
+        $response->error_log('Hubo un error :(');
+    }
+
+
     $response->write($json);
     return $response;
 });
@@ -904,6 +1073,33 @@ $app->get('/reporte/mesa/facturaciones', function (Request $request, Response $r
     FROM mesa m
     LEFT JOIN pedido p ON p.mesaID = m.MesaID
     LEFT JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
+    GROUP BY m.codigo
+    ORDER BY m.MesaID
+    ");
+    $consulta->execute(array($params["fechaDesde"],$params["fechaHasta"]));
+    $respuesta = $consulta->fetchAll();
+
+    $json = json_encode($respuesta);
+    $response->write($json);
+    return $response;
+});
+
+$app->get('/reporte/mesa/comentarios', function (Request $request, Response $response, array $args) {
+
+    $params = $request->getQueryParams();
+
+    $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT 
+    m.codigo,
+    AVG(e.cocineroValor) as cocinero,
+    AVG(e.mesaValor) as mesa,
+    AVG(e.restauranteValor) as restaurante,
+    AVG(e.mozoValor) as mozo,
+    AVG((e.mozoValor + e.mozoValor + e.restauranteValor + e.cocineroValor)/4) as promedio
+    FROM mesa m
+    LEFT JOIN pedido p ON p.mesaID = m.MesaID
+    LEFT JOIN encuesta e ON e.pedidoID = p.pedidoID AND p.estadoPedidoID = 4 AND p.fechaFin BETWEEN ? AND ?
     GROUP BY m.codigo
     ORDER BY m.MesaID
     ");

@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
- 
+
 import { AuthenticationService } from './authentication.service';
 import { Usuario } from '../usuario';
 import { environment } from '../../environments/environment';
 import { Perfil } from '../perfil.enum';
 import { error } from 'util';
- 
+
 @Injectable()
 export class UserService {
 
@@ -18,74 +18,95 @@ export class UserService {
         private http: Http,
         private authenticationService: AuthenticationService) {
     }
- 
-    getUsers(): Observable<Usuario[]> {
-        // add authorization header with jwt token
-        let headers = new Headers({ 'Authorization': 'Bearer ' + this.authenticationService.token });
-        let options = new RequestOptions({ headers: headers });
- 
-        // get users from api
-        return this.http.get('/api/users', options)
-            .map((response: Response) => response.json());
-    }
 
-    public getUsersByProfile(perfilID: number): Observable<Usuario[]>{
+    public getUsersByProfile(perfilID: number): Observable<Usuario[]> {
         return this.http.get(this.url + "usuarios/list/" + perfilID.toString())
             .map(
-                (response: Response)=>{
-                    let array = response.json(); 
+                (response: Response) => {
+                    let array = response.json();
                     array.forEach(element => {
                         element.perfil = Perfil[element.perfilID]
                     });
                     return array;
                 },
-                (error)=>console.error(error)
+                (error) => console.error(error)
             );
     }
 
-    registrarUsuario(usuario: Usuario){
-        let data : FormData = new FormData();
-        data.append("nombre", usuario.nombre);
-        data.append("apellido", usuario.apellido);
-        data.append("email", usuario.email);
-        data.append("fecha", usuario.fecha.toString());
-        data.append("password", usuario.password);
-        data.append("foto", usuario.foto);
-        data.append("perfilID", usuario.perfilID.toString());
-        return this.http.post(this.url + "usuario/crear", data)
-            .map((response: Response) => {
-                console.log(response);
-                response.json();
-            });
+    registrarUsuario(usuario: Usuario) {
+        return this.http.post(this.url + "usuario/crear", usuario).map(
+        (response: Response) => {
+            console.log(response);
+            response.json();
+        },
+            error => console.error(error)
+        );
     }
 
-    public deleteUsuario(id: number): Observable<boolean>{
+    public deleteUsuario(id: number): Observable<boolean> {
         console.log(id);
         return this.http.delete(this.url + "usuario/eliminar/" + id)
-            .map((response: Response)=>{
+            .map((response: Response) => {
                 console.log(response);
                 return true;
             });
     }
 
-    public getUser(id: number): Observable<Usuario>{
+    public getUser(id: number): Observable<Usuario> {
         return this.http.get(this.url + "usuario/" + id)
-            .map((response: Response)=>{
+            .map((response: Response) => {
                 let user = response.json();
                 user.perfil = Perfil[user.perfilID];
                 return user;
             });
     }
 
-    public getReporteAccesos(fechaDesde, fechaHasta){
-        return this.http.get(this.url + "reporte/empleado/accesos", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
+    public getReporteAccesos(fechaDesde, fechaHasta) {
+        return this.http.get(this.url + "reporte/empleado/accesos", { params: { fechaDesde: fechaDesde, fechaHasta: fechaHasta } })
             .map(
-                response=>{
-                    return response.json();                    
+                response => {
+                    return response.json();
                 },
-                error=>{
+                error => {
                     console.error(error);
                 }
             )
+    }
+
+    getUsuarios() {
+        return this.http.get(this.url + "usuarios").map(
+            (response) => {
+                return response.json();
+            },
+            error => console.log(error)
+        );
+    }
+
+    eliminarUsuario(usuario) {
+        return this.http.put(this.url + "usuario/eliminar", usuario).map(
+            response => {
+                return response.json();
+            },
+            error => console.error(error)
+        );
+    }
+
+    suspenderUsuario(usuario) {
+        return this.http.put(this.url + "usuario/suspender", usuario).map(
+            response => {
+                console.log(response);
+                return response.json();
+            },
+            error => console.error(error)
+        );
+    }
+
+    getPerfiles() {
+        return this.http.get(this.url + "perfiles").map(
+            response => {
+                return response.json()
+            },
+            error => console.log(error)
+        );
     }
 }

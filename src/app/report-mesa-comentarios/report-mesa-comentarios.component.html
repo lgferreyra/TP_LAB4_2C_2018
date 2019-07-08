@@ -1,3 +1,28 @@
-<p>
-  report-mesa-comentarios works!
-</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" style="margin-top: -40px; min-height: 600px;">
+  <h3>Reporte comentarios por mesa</h3>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="desde">Desde:</label>
+      <input type="date" id="desde" class="form-control" formControlName="fechaDesde">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="hasta">Hasta:</label>
+      <input type="date" id="hasta" class="form-control" formControlName="fechaHasta">
+    </div>
+  </div>
+  <div class="form-row">
+    <button type="submit" [disabled]="!form.valid" class="btn btn-success">Generar</button>
+  </div>
+  <div class="reporte">
+    <div *ngIf="barChartLabels.length == 0">
+      No hay datos
+    </div>
+    <div *ngIf="barChartLabels.length != 0">
+      <div>
+        <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+          [plugins]="barChartPlugins" [legend]="barChartLegend" [chartType]="barChartType" height="350">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</form>

@@ -42,6 +42,7 @@ import { ReportMesaImportesComponent } from './report-mesa-importes/report-mesa-
 import { ReportMesaTopFacturacionComponent } from './report-mesa-top-facturacion/report-mesa-top-facturacion.component';
 import { ReportMesaComentariosComponent } from './report-mesa-comentarios/report-mesa-comentarios.component';
 import { ConsultaPedidoComponent, PreguntaDialog } from './consulta-pedido/consulta-pedido.component';
+import { UserListComponent, ConfirmarDialog } from './user-list/user-list.component';
 
 export function tokenGetter() {
   return localStorage.getItem('currentUser');
@@ -55,7 +56,8 @@ export function tokenGetter() {
     ConsultaDialog,
     EntregarDialog,
     CancelarDialog,
-    PreguntaDialog
+    PreguntaDialog,
+    ConfirmarDialog
   ],
   declarations: [
     AppComponent,
@@ -71,6 +73,7 @@ export function tokenGetter() {
     EntregarDialog,
     CancelarDialog,
     PreguntaDialog,
+    ConfirmarDialog,
     IsNullValuePipe,
     ReportEmpleadoIngresosComponent,
     ReportEmpleadoOperacionesComponent,
@@ -82,7 +85,8 @@ export function tokenGetter() {
     ReportMesaImportesComponent,
     ReportMesaTopFacturacionComponent,
     ReportMesaComentariosComponent,
-    ConsultaPedidoComponent
+    ConsultaPedidoComponent,
+    UserListComponent
   ],
   imports: [
     BrowserModule,

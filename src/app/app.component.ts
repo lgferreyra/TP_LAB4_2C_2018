@@ -53,7 +53,7 @@ export class AppComponent {
     setTimeout(() => {
         /** spinner ends after 5 seconds */
         this.spinner.hide();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/home']);
     }, 500);
   }
 

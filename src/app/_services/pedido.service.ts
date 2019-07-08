@@ -102,6 +102,15 @@ export class PedidoService {
     );
   }
 
+  saveEncuesta(encuesta){
+    return this.http.post(this.url + "pedido/encuesta", encuesta).map(
+      response=>{
+        return response.json();
+      },
+      error=>console.error(error)
+    )
+  }
+
   reporteEmpleadoOperaciones(fechaDesde, fechaHasta){
     return this.http.get(this.url + "reporte/empleado/operaciones", {params:{fechaDesde:fechaDesde,fechaHasta:fechaHasta}})
       .map(

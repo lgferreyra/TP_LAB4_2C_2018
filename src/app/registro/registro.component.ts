@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Domicilio } from '../domicilio';
 import { DomicilioService } from '../_services/domicilio.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-registro',
@@ -18,15 +19,21 @@ export class RegistroComponent implements OnInit {
   domicilio: Domicilio = new Domicilio();
   loading: boolean = false;
   url: any;
+  perfiles = [];
 
   constructor(
     private userService: UserService,
     private domicilioService: DomicilioService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
+    this.userService.getPerfiles().subscribe(
+      (result) => this.perfiles = result,
+      error => console.error(error)
+    );
   }
 
   onFileChanged(event) {
@@ -46,22 +53,26 @@ export class RegistroComponent implements OnInit {
     this.url = undefined;
   }
 
-  registrarse() {
+  registrar() {
+    console.log(this.usuario);
     this.loading = true;
-    this.usuario.perfilID = Perfil.cliente;
-    this.userService.registrarUsuario(this.usuario)
-      .subscribe(
-        result => {
-          console.log(result);
-          this.snackBar.open("Se ha registrado correctamente. Continue iniciando sesión", "Cerrar", { duration: 3000 });
-          this.router.navigate(['/login']);
-        },
-        error => {
-          console.error(error);
-          this.loading = false;
-        },
-        () => this.loading = false
-      );
+    this.spinner.show();
+    this.userService.registrarUsuario(this.usuario).subscribe(
+      result => {
+        console.log(result);
+        this.snackBar.open("El usuario fue dado de alta correctamente", "Cerrar", { duration: 3000 });
+        this.router.navigate(['/user-list']);
+      },
+      error => {
+        console.error(error);
+        this.loading = false;
+        this.spinner.hide();
+      },
+      () => {
+        this.loading = false;
+        this.spinner.hide();
+      }
+    );
   }
 
 }

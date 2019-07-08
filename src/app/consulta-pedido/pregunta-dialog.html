@@ -1,8 +1,28 @@
-<h1 mat-dialog-title>Confirmar</h1>
-<div mat-dialog-content>
-  <p>Está seguro que desea cancelar el pedido?</p>
+<h2 mat-dialog-title>Encuesta de calidad de servicio</h2>
+<div mat-dialog-content class="mat-typography">
+  <p>No tardará más de cinco minutos en completarla y nos será de gran ayuda
+    para mejorar nuestros servicios.
+    En la escala del 1 al 10, donde 1 es totalmente insatisfecho y 10 totalmente satisfecho, opine acerca de los siguiente items
+  </p>
+
+  <h4>Mesa</h4>
+  <mat-slider min="1" max="10" step="1" thumbLabel [(ngModel)]="data.mesa"></mat-slider>
+
+  <h4>Restaurante</h4>
+  <mat-slider min="1" max="10" step="1" thumbLabel [(ngModel)]="data.restaurante"></mat-slider>
+
+  <h4>Mozo</h4>
+  <mat-slider min="1" max="10" step="1" thumbLabel [(ngModel)]="data.mozo"></mat-slider>
+
+  <h4>Cocinero</h4>
+  <mat-slider min="1" max="10" step="1" thumbLabel [(ngModel)]="data.cocinero"></mat-slider>
+
+  <h4>Deje aqui sus comentarios</h4>
+  <mat-form-field>
+    <textarea matInput maxlength="66" [(ngModel)]="data.comentarios"></textarea>
+  </mat-form-field>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions align="end">
   <button mat-flat-button (click)="onNoClick()">Cancelar</button>
   <button mat-flat-button color="primary" [mat-dialog-close]="data">Confirmar</button>
 </div>

@@ -18,6 +18,7 @@ import { ReportMesaImportesComponent } from './report-mesa-importes/report-mesa-
 import { ReportMesaTopFacturacionComponent } from './report-mesa-top-facturacion/report-mesa-top-facturacion.component';
 import { ReportMesaUsosComponent } from './report-mesa-usos/report-mesa-usos.component';
 import { ConsultaPedidoComponent } from './consulta-pedido/consulta-pedido.component';
+import { UserListComponent } from './user-list/user-list.component';
 
 const routes: Routes = [
   { path: "login", component: LoginComponent },
@@ -35,6 +36,14 @@ const routes: Routes = [
   { 
     path: 'dashboard', 
     component: DashboardComponent, 
+    canActivate: [ProfileGuard], 
+    data: { 
+      expectedRole: []
+    } 
+  },
+  { 
+    path: 'user-list', 
+    component: UserListComponent, 
     canActivate: [ProfileGuard], 
     data: { 
       expectedRole: []

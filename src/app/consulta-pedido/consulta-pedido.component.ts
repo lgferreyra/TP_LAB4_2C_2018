@@ -41,29 +41,37 @@ export class ConsultaPedidoComponent implements OnInit {
                 result=>{
                   if(result.existe == 0){
                     setTimeout((args)=>{
+                      
                       const dialogRef = this.dialog.open(PreguntaDialog, {
-                        width: '270px',
-                        data: { pedidoID: this.pedidoDetalles[0].pedidoID }
+                        width: '40%',
+                        data: { 
+                          pedidoID: this.pedidoDetalles[0].pedidoID,
+                          restaurante: 0,
+                          mesa: 0,
+                          mozo: 0,
+                          cocinero: 0,
+                          comentarios: ""
+                         }
                       });
                   
-                      /*dialogRef.beforeClosed().subscribe(result => {
+                      dialogRef.beforeClosed().subscribe(result => {
                         if (result != undefined) {
+                          console.log(result);
                           this.spinner.show();
-                          pedido.estadoPedidoID = 5;
-                          this.pedidoService.cancelarPedido(pedido).subscribe(
-                            result => {
+                          this.pedidoService.saveEncuesta(result).subscribe(
+                            (result)=>{
                               console.log(result);
-                              this.ngOnInit();
-                              this.snackBar.open("El pedido ha sido cancelado", "", { duration: 3000, verticalPosition: 'top' });
+                              this.snackBar.open("Muchas gracias por su tiempo", "", {duration:3000, verticalPosition: "top"});
                             },
-                            error => {
-                              console.error(error);
+                            error=>{
+                              console.log(error);
+                              this.snackBar.open("Ha ocurrido un problema", "", {duration:3000, verticalPosition: "top"});
                               this.spinner.hide();
                             },
-                            () => this.spinner.hide()
+                            ()=>this.spinner.hide()
                           );
                         }
-                      });*/
+                      });
                     },3000);
                   }
                 },
