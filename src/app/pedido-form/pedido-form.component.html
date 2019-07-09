@@ -1,127 +1,129 @@
-<form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()" style="margin-top: -40px">
-  <div *ngIf="pedidoForm.get('id').value != '' && pedidoForm.get('id').value != null">
-    <div class="form-row col-md-3">
-      <div class="form-group">
-        <label for="id">id:</label>
-        <input readonly name="id" class="form-control-plaintext" type="text" formControlName="id">
-      </div>
-      <div class="form-group col-md-3">
-        <label for="codigo">codigo:</label>
-        <input readonly id="codigo" class="form-control-plaintext" type="text" formControlName="codigo">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col-md-3">
-        <label for="fechaCreacion">fechaCreacion:</label>
-        <input readonly id="fechaCreacion" class="form-control-plaintext" type="text" formControlName="fechaCreacion">
-      </div>
-      <div class="form-group col-md-3">
-        <label for="fechaFin">fechafin:</label>
-        <input readonly id="fechaFin" class="form-control-plaintext" type="text" formControlName="fechaFin">
-      </div>
-      <div class="form-group col-md-3">
-        <label for="estado">estado:</label>
-        <input readonly id="estado" class="form-control-plaintext" type="text" formControlName="estado">
-      </div>
-    </div>
-  </div>
-
-  <!--<div class="form-row">
-     <div class="form-group col-md-3">
-      <label for="mozo">mozo:</label>
-      <input readonly name="mozo" class="form-control-plaintext" type="text" formControlName="mozo">
-    </div> -->
-    <!-- <div class="form-group col-md-3">
-      <label for="mesa">mesa:</label>
-      <input readonly id="mesa" class="form-control-plaintext" type="text" formControlName="mesa">
-    </div> 
-  </div>-->
-  
-  <div class="form-row">
-    <div class="form-group col-md-3">
-      <label for="cliente">Cliente:</label>
-      <input type="text" id="cliente" class="form-control" formControlName="cliente">
-    </div>
-    <div class="form-group col-md-3">
-      <label for="mesa">Mesa:</label>
-      <select class="form-control" id="mesa" formControlName="mesa">
-        <option *ngIf="mesas.length == 0" [value]="null" [selected]="true">No hay mesas para asignar</option>
-        <option *ngFor="let mesa of mesas; let i = index;" [value]="mesa.MesaID">{{mesa.codigo}}</option>
-      </select>
-    </div>
-    <!-- <div class="form-group col-md-4">
-      <label for="foto">foto:</label>
-      <input type="file" id="foto" formControlName="foto"/>
-    </div> -->
-  </div>
-  <!-- <div formArrayName="items">
-    <div *ngFor="let address of items.controls; let i=index">
-      <input type="text" [formControlName]="i" readonly class="form-control-plaintext">
-    </div>
-  </div> -->
-  
-  <div class="form-row">
-    <div class="col-md-6" style="height: 350px">
-      <h4>Pedido</h4>
-      <table class="table table-hover table-borderless overflow-auto" *ngIf="pedidoDetalles.length > 0">
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Precio</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Eliminar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let pedidoDetalle of pedidoDetalles; let j=index">
-            <td>{{pedidoDetalle.item.nombre}}</td>
-            <td>{{pedidoDetalle.item.precio}}</td>
-            <td><input type="number" min="1" max="10" class="form-control col-md-5" [(ngModel)]="pedidoDetalle.cantidad"
-                [ngModelOptions]="{standalone: true}"></td>
-            <td><button type="button" class="btn btn-danger btn"
-                (click)="removeItem(pedidoDetalle)">Eliminar</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <p *ngIf="pedidoDetalles.length == 0">No hay pedidos :(</p>
-    </div>
-    <div class="col-md-6" style="height: 350px">
-      <h4>Menu</h4>
-      <div class="form-row">
-        <div class="form-group row">
-          <label for="sector" class="col-form-label col-md-3">Filtrar:</label>
-          <select id="sector" class="form-control col-md-5" (change)="changeSector()" [(ngModel)]="selectedSector" [ngModelOptions]="{standalone: true}">
-            <option value="0">Todo</option>
-            <option value="1">Barra de tragos y vinos</option>
-            <option value="2">Barra de choperas de cerveza artesanal</option>
-            <option value="3">Cocina</option>
-            <option value="4">Candy bar</option>
-          </select>
+<div class="container" style="margin-top: 100px; margin-bottom: 100px">
+    <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()">
+      <div *ngIf="pedidoForm.get('id').value != '' && pedidoForm.get('id').value != null">
+        <div class="form-row col-md-3">
+          <div class="form-group">
+            <label for="id">id:</label>
+            <input readonly name="id" class="form-control-plaintext" type="text" formControlName="id">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="codigo">codigo:</label>
+            <input readonly id="codigo" class="form-control-plaintext" type="text" formControlName="codigo">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="fechaCreacion">fechaCreacion:</label>
+            <input readonly id="fechaCreacion" class="form-control-plaintext" type="text" formControlName="fechaCreacion">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="fechaFin">fechafin:</label>
+            <input readonly id="fechaFin" class="form-control-plaintext" type="text" formControlName="fechaFin">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="estado">estado:</label>
+            <input readonly id="estado" class="form-control-plaintext" type="text" formControlName="estado">
+          </div>
         </div>
       </div>
-      <table class="table table-hover table-borderless overflow-auto">
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Descripcion</th>
-            <th scope="col">Precio</th>
-            <th scope="col">Agregar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let itemMenu of selectedItemsMenu; let j=index">
-            <td>{{itemMenu.nombre}}</td>
-            <td>{{itemMenu.descripcion}}</td>
-            <td>{{itemMenu.precio}}</td>
-            <td><button type="button" class="btn btn-primary btn" (click)="addItem(itemMenu)">Agregar</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="form-row">
-    <button type="button" (click)="clear()" class="btn btn-light">Limpiar</button>
-    <button type="submit" [disabled]="!pedidoForm.valid" class="btn btn-success">Confirmar</button>
-  </div>
-</form>
+    
+      <!--<div class="form-row">
+         <div class="form-group col-md-3">
+          <label for="mozo">mozo:</label>
+          <input readonly name="mozo" class="form-control-plaintext" type="text" formControlName="mozo">
+        </div> -->
+        <!-- <div class="form-group col-md-3">
+          <label for="mesa">mesa:</label>
+          <input readonly id="mesa" class="form-control-plaintext" type="text" formControlName="mesa">
+        </div> 
+      </div>-->
+      
+      <div class="form-row">
+        <div class="form-group col-md-3">
+          <label for="cliente">Cliente:</label>
+          <input type="text" id="cliente" class="form-control" formControlName="cliente">
+        </div>
+        <div class="form-group col-md-3">
+          <label for="mesa">Mesa:</label>
+          <select class="form-control" id="mesa" formControlName="mesa">
+            <option *ngIf="mesas.length == 0" [value]="null" [selected]="true">No hay mesas para asignar</option>
+            <option *ngFor="let mesa of mesas; let i = index;" [value]="mesa.MesaID">{{mesa.codigo}}</option>
+          </select>
+        </div>
+        <!-- <div class="form-group col-md-4">
+          <label for="foto">foto:</label>
+          <input type="file" id="foto" formControlName="foto"/>
+        </div> -->
+      </div>
+      <!-- <div formArrayName="items">
+        <div *ngFor="let address of items.controls; let i=index">
+          <input type="text" [formControlName]="i" readonly class="form-control-plaintext">
+        </div>
+      </div> -->
+      
+      <div class="form-row">
+        <div class="col-md-6" style="height: 350px">
+          <h4>Pedido</h4>
+          <table class="table table-hover table-borderless overflow-auto" *ngIf="pedidoDetalles.length > 0">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pedidoDetalle of pedidoDetalles; let j=index">
+                <td>{{pedidoDetalle.item.nombre}}</td>
+                <td>{{pedidoDetalle.item.precio}}</td>
+                <td><input type="number" min="1" max="10" class="form-control col-md-5" [(ngModel)]="pedidoDetalle.cantidad"
+                    [ngModelOptions]="{standalone: true}"></td>
+                <td><button type="button" class="btn btn-danger btn"
+                    (click)="removeItem(pedidoDetalle)">Eliminar</button></td>
+              </tr>
+            </tbody>
+          </table>
+          <p *ngIf="pedidoDetalles.length == 0">No hay pedidos :(</p>
+        </div>
+        <div class="col-md-6" style="height: 350px">
+          <h4>Menu</h4>
+          <div class="form-row">
+            <div class="form-group row">
+              <label for="sector" class="col-form-label col-md-3">Filtrar:</label>
+              <select id="sector" class="form-control col-md-5" (change)="changeSector()" [(ngModel)]="selectedSector" [ngModelOptions]="{standalone: true}">
+                <option value="0">Todo</option>
+                <option value="1">Barra de tragos y vinos</option>
+                <option value="2">Barra de choperas de cerveza artesanal</option>
+                <option value="3">Cocina</option>
+                <option value="4">Candy bar</option>
+              </select>
+            </div>
+          </div>
+          <table class="table table-hover table-borderless overflow-auto">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripcion</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Agregar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let itemMenu of selectedItemsMenu; let j=index">
+                <td>{{itemMenu.nombre}}</td>
+                <td>{{itemMenu.descripcion}}</td>
+                <td>{{itemMenu.precio}}</td>
+                <td><button type="button" class="btn btn-primary btn" (click)="addItem(itemMenu)">Agregar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="form-row">
+        <button type="button" (click)="clear()" class="btn btn-light">Limpiar</button>
+        <button type="submit" [disabled]="!pedidoForm.valid" class="btn btn-success">Confirmar</button>
+      </div>
+    </form>
+</div>

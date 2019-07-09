@@ -45,7 +45,7 @@ export class UserListComponent implements OnInit {
         this.userService.suspenderUsuario(usuario).subscribe(
           result=>{
             console.log(result);
-            this.snackBar.open("El usuario ha sido suspendido", "", {duration:3000,verticalPosition:"top"});
+            this.snackBar.open("El usuario ha sido suspendido", "", {duration:3000,verticalPosition:"bottom"});
             this.ngOnInit();
           },
           error=>{
@@ -73,7 +73,7 @@ export class UserListComponent implements OnInit {
         this.userService.suspenderUsuario(usuario).subscribe(
           result=>{
             console.log(result);
-            this.snackBar.open("El usuario ha sido habilitado", "", {duration:3000,verticalPosition:"top"});
+            this.snackBar.open("El usuario ha sido habilitado", "", {duration:3000,verticalPosition:"bottom"});
             this.ngOnInit();
           },
           error=>{
@@ -101,7 +101,7 @@ export class UserListComponent implements OnInit {
         this.userService.eliminarUsuario(usuario).subscribe(
           result=>{
             console.log(result);
-            this.snackBar.open("El usuario ha sido eliminado", "", {duration:3000,verticalPosition:"top"});
+            this.snackBar.open("El usuario ha sido eliminado", "", {duration:3000,verticalPosition:"bottom"});
             this.ngOnInit();
           },
           error=>{

@@ -1,38 +1,64 @@
-<table *ngIf="pedidoDetalles.length != 0" class="table">
-  <thead>
-    <tr>
-      <th scope="col">Detalle</th>
-      <th scope="col">Cantidad</th>
-      <th scope="col">Precio Unitario</th>
-      <th scope="col">Inicio</th>
-      <th scope="col">Estimado</th>
-      <th scope="col">Estado</th>
-      <th scope="col">Precio</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let pedidoDetalle of pedidoDetalles; let j=index" [ngClass]="{
-        'table-secondary':pedidoDetalle.estadoPedidoID === 1,
-        'table-warning':pedidoDetalle.estadoPedidoID === 2,
-        'table-success':pedidoDetalle.estadoPedidoID === 3,
-        'table-danger':pedidoDetalle.estadoPedidoID === 5
-      }">
-      <td>{{pedidoDetalle.item}}</td>
-      <td>{{pedidoDetalle.cantidad}}</td>
-      <td>${{pedidoDetalle.precioUnitario}}</td>
-      <td>{{pedidoDetalle.fechaInicio}}</td>
-      <td>{{pedidoDetalle.tiempoEstimado | isNullValue: "No especificado"}}</td>
-      <td>{{pedidoDetalle.estado | titlecase}}</td>
-      <td>${{pedidoDetalle.precio}}</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <th>TOTAL: </th>
-      <th>${{total}}</th>
-    </tr>
-  </tbody>
-</table>
+<div class="container" style="margin-top: 100px">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Detalle de su pedido</h4>
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="row">
+            <div class="col-sm-4">
+              <h5 class="card-text text-right">Cliente:</h5>
+              <h5 class="card-text text-right">Mesa:</h5>
+              <h5 class="card-text text-right">Pedido:</h5>
+            </div>
+            <div class="col-sm-8">
+              <h5 class="card-text text-primary text-left">{{cliente}}</h5>
+              <h5 class="card-text text-primary text-left">{{mesa}}</h5>
+              <h5 class="card-text text-primary text-left">{{pedido}}</h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-9">
+          <table *ngIf="pedidoDetalles.length != 0" class="table">
+            <thead>
+              <tr>
+                <th scope="col">Detalle</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Precio Unitario</th>
+                <th scope="col">Inicio</th>
+                <th scope="col">Estimado</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let pedidoDetalle of pedidoDetalles; let j=index" [ngClass]="{
+                  'table-secondary':pedidoDetalle.estadoPedidoID === 1,
+                  'table-warning':pedidoDetalle.estadoPedidoID === 2,
+                  'table-success':pedidoDetalle.estadoPedidoID === 3,
+                  'table-danger':pedidoDetalle.estadoPedidoID === 5
+                }">
+                <td>{{pedidoDetalle.item}}</td>
+                <td>{{pedidoDetalle.cantidad}}</td>
+                <td>${{pedidoDetalle.precioUnitario}}</td>
+                <td>{{pedidoDetalle.fechaInicio}}</td>
+                <td>{{pedidoDetalle.tiempoEstimado | isNullValue: "No especificado"}}</td>
+                <td>{{pedidoDetalle.estado | titlecase}}</td>
+                <td>${{pedidoDetalle.precio}}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <th>TOTAL: </th>
+                <th>${{total}}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <button (click)="encuesta()" class="btn btn-primary">Encuesta</button>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,8 @@ import { HttpModule } from '@angular/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ChartsModule } from 'ng2-charts';
+import { NgxPageScrollCoreModule } from 'ngx-page-scroll-core';
+import { NgxPageScrollModule } from 'ngx-page-scroll';
 
 // used to create fake backend
 import { fakeBackendProvider } from './_helpers/fake-backend';
@@ -99,6 +101,8 @@ export function tokenGetter() {
     ReactiveFormsModule,
     NgxSpinnerModule,
     ChartsModule,
+    NgxPageScrollCoreModule,
+    NgxPageScrollModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

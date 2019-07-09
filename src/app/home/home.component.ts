@@ -35,7 +35,7 @@ export class HomeComponent implements OnInit {
           if(result.existe == 1){
             this.router.navigate(["/consultaPedido", this.consulta.pedido, this.consulta.mesa]);
           } else {
-            this.snackBar.open("No se encontro su pedido. Verifique los datos", "", { duration: 3000, verticalPosition: 'top' });
+            this.snackBar.open("No se encontro su pedido. Verifique los datos", "", { duration: 3000, verticalPosition: 'bottom', panelClass: ['white-snackbar'] });
           }
         },
         error=>{

@@ -60,7 +60,7 @@ export class RegistroComponent implements OnInit {
     this.userService.registrarUsuario(this.usuario).subscribe(
       result => {
         console.log(result);
-        this.snackBar.open("El usuario fue dado de alta correctamente", "Cerrar", { duration: 3000 });
+        this.snackBar.open("El usuario fue dado de alta correctamente", "Cerrar", { duration: 3000 , verticalPosition: "bottom"});
         this.router.navigate(['/user-list']);
       },
       error => {

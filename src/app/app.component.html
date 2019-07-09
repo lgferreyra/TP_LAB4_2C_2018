@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top" *ngIf="logged">
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed-top" *ngIf="logged">
     <div class="container">
         <a class="navbar-brand" routerLink="/dashboard">Comandita</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03"
@@ -52,27 +52,89 @@
             <button class="btn btn-outline-light my-2 my-sm-0" *ngIf="logged" (click)="logout()">Cerrar Sesión</button>
         </div>
     </div>
+</nav> -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3 navbar-scrolled" id="mainNav">
+    <div class="container">
+        <a pageScroll [pageScrollDuration]="500" class="navbar-brand js-scroll-trigger" href="#masthead" routerLink="/home">COMANDITA UTN</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" *ngIf="logged">
+                    <a class="nav-link active" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+                        routerLink="/dashboard">
+                        Tablero
+                    </a>
+                </li>
+                <li class="nav-item dropdown" *ngIf="logged && socio">
+                    <a class="nav-link active dropdown-toggle" href="#" id="reportesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Empleados
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                        <a class="dropdown-item" routerLink="/report-empleado-ingresos">Ingresos</a>
+                        <a class="dropdown-item" routerLink="/report-empleado-operaciones">Operaciones</a>
+                        <a class="dropdown-item" routerLink="/user-list">Administrar</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" *ngIf="logged && socio">
+                    <a class="nav-link active dropdown-toggle" href="#" id="reportesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pedidos
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                        <a class="dropdown-item" routerLink="/report-pedido-ventas">Top ventas</a>
+                        <a class="dropdown-item" routerLink="/report-pedido-demorados">Demorados</a>
+                        <a class="dropdown-item" routerLink="/report-pedido-cancelados">Cancelados</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" *ngIf="logged && socio">
+                    <a class="nav-link active dropdown-toggle" href="#" id="reportesDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Mesas
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportesDropdown">
+                        <a class="dropdown-item" routerLink="/report-mesa-usos">Top usos</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-top-facturacion">Top facturacion</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-importes">Top Importes</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-facturacion">Facturacion</a>
+                        <a class="dropdown-item" routerLink="/report-mesa-comentarios">Comentarios</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto my-2 my-lg-0">
+                <li class="nav-item">
+                    <a pageScroll [pageScrollDuration]="500" class="nav-link js-scroll-trigger" href="#consultar"
+                        routerLink="/home">Consultar pedido</a>
+                </li>
+                <li class="nav-item">
+                    <a pageScroll [pageScrollDuration]="500" class="nav-link js-scroll-trigger" href="#portfolio"
+                        routerLink="/home">Imagenes</a>
+                </li>
+                <li class="nav-item">
+                    <a pageScroll [pageScrollDuration]="500" class="nav-link js-scroll-trigger" href="#contact"
+                        routerLink="/home">Contacto</a>
+                </li>
+                <li class="nav-item" *ngIf="!logged">
+                    <a class="nav-link js-scroll-trigger" routerLink="/login">Empleados</a>
+                </li>
+                <li class="nav-item" *ngIf="logged">
+                    <a class="nav-link js-scroll-trigger" (click)="logout()" style="cursor: pointer;">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </nav>
 <!-- main app container -->
-<div class="jumbotron" style="margin-bottom: 0px;background-color: whitesmoke;min-height: 100%">
-    <div class="container">
-        <router-outlet></router-outlet>
-    </div>
-</div>
-<ngx-spinner
-bdOpacity = 0.9
-bdColor = "rgba(51,51,51,0.77)"
-size = "default"
-color = "#fff"
-type = "ball-clip-rotate"
-[fullScreen] = "true"
->
-    <p style="color: white" > Cargando... </p>
+<!-- <div class="jumbotron" style="margin-bottom: 0px;background-color: whitesmoke;min-height: 100%">
+    <div class="container"> -->
+<router-outlet></router-outlet>
+<!-- </div>
+</div> -->
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(51,51,51,0.77)" size="default" color="#fff" type="ball-clip-rotate"
+    [fullScreen]="true">
+    <p style="color: white"> Cargando... </p>
 </ngx-spinner>
-<!-- Footer -->
-<footer class="py-5 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; UTNFRA Laboratorio 4</p>
-    </div>
-    <!-- /.container -->
-</footer>

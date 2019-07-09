@@ -1,48 +1,50 @@
-<div class="form-row" style="margin-bottom: 10px">
-  <div class="col-md-4">
-    <h3>Usuarios</h3>
-  </div>
-  <div class="col-md-2 offset-md-6">
-    <button type="button" class="btn btn-primary" routerLink="/registro">Crear usuario</button>
-  </div>
+<div class="container" style="margin-top: 100px">
+    <div class="form-row">
+      <div class="col-md-4">
+        <h3>Usuarios</h3>
+      </div>
+      <div class="col-md-2 offset-md-6">
+        <button type="button" class="btn btn-primary" routerLink="/registro">Crear usuario</button>
+      </div>
+    </div>
+    <table *ngIf="usuarios.length != 0" class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Apellido</th>
+          <th scope="col">Email</th>
+          <th scope="col">Fecha</th>
+          <th scope="col">Perfil</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios; let i=index" [ngClass]="{'table-secondary':usuario.suspendido === 1}">
+          <td>{{usuario.nombre}}</td>
+          <td>{{usuario.apellido}}</td>
+          <td>{{usuario.email}}</td>
+          <td>{{usuario.fecha | date:"MM/dd/yyyy"}}</td>
+          <td>{{usuario.perfil | titlecase}}</td>
+          <td *ngIf="usuario.suspendido==1">Suspendido</td>
+          <td *ngIf="usuario.suspendido==0">Habilidado</td>
+          <td>
+            <div class="dropdown">
+              <button class="btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Acciones
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button *ngIf="usuario.estadousuarioID == 3" class="dropdown-item" type="button"
+                  (click)="entregausuario(usuario)">Entregar</button>
+                <button *ngIf="usuario.suspendido==0" class="dropdown-item" type="button" (click)="suspenderUsuario(usuario)">Suspender</button>
+                <button *ngIf="usuario.suspendido==1" class="dropdown-item" type="button" (click)="habilitarUsuario(usuario)">Habilitar</button>
+                <button class="dropdown-item" type="button" (click)="eliminarUsuario(usuario)">Eliminar</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="usuarios.length == 0">No hay usuarios</p>
 </div>
-<table *ngIf="usuarios.length != 0" class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Nombre</th>
-      <th scope="col">Apellido</th>
-      <th scope="col">Email</th>
-      <th scope="col">Fecha</th>
-      <th scope="col">Perfil</th>
-      <th scope="col">Estado</th>
-      <th scope="col">Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let usuario of usuarios; let i=index" [ngClass]="{'table-secondary':usuario.suspendido === 1}">
-      <td>{{usuario.nombre}}</td>
-      <td>{{usuario.apellido}}</td>
-      <td>{{usuario.email}}</td>
-      <td>{{usuario.fecha | date:"MM/dd/yyyy"}}</td>
-      <td>{{usuario.perfil | titlecase}}</td>
-      <td *ngIf="usuario.suspendido==1">Suspendido</td>
-      <td *ngIf="usuario.suspendido==0">Habilidado</td>
-      <td>
-        <div class="dropdown">
-          <button class="btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Acciones
-          </button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <button *ngIf="usuario.estadousuarioID == 3" class="dropdown-item" type="button"
-              (click)="entregausuario(usuario)">Entregar</button>
-            <button *ngIf="usuario.suspendido==0" class="dropdown-item" type="button" (click)="suspenderUsuario(usuario)">Suspender</button>
-            <button *ngIf="usuario.suspendido==1" class="dropdown-item" type="button" (click)="habilitarUsuario(usuario)">Habilitar</button>
-            <button class="dropdown-item" type="button" (click)="eliminarUsuario(usuario)">Eliminar</button>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<p *ngIf="usuarios.length == 0">No hay usuarios</p>

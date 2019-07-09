@@ -306,8 +306,8 @@ $app->get('/pedido/consulta/{pedido}/{mesa}', function (Request $request, Respon
 
     $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
     $consulta = $objetoAccesoDato->RetornarConsulta("
-    SELECT pd.pedidoDetalleID, pd.itemMenuID, im.nombre AS item, pd.cantidad, pd.fechaInicio, m.codigo, pd.precio * pd.cantidad as precio,
-    pd.fechaFin, pd.tiempoEstimado, pd.estadoPedidoID, ep.nombre AS estado, pd.pedidoID, p.codigo, pd.precio as precioUnitario, p.nombreCliente
+    SELECT pd.pedidoDetalleID, pd.itemMenuID, im.nombre AS item, pd.cantidad, pd.fechaInicio, m.codigo mesa, pd.precio * pd.cantidad as precio,
+    pd.fechaFin, pd.tiempoEstimado, pd.estadoPedidoID, ep.nombre AS estado, pd.pedidoID, p.codigo pedido, pd.precio as precioUnitario, p.nombreCliente
     FROM pedido p
     INNER JOIN pedidodetalle pd ON pd.pedidoID = p.pedidoID
     INNER JOIN itemmenu im ON im.itemMenuID = pd.itemMenuID

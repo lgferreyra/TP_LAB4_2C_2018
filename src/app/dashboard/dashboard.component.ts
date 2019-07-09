@@ -145,7 +145,7 @@ export class DashboardComponent implements OnInit {
           result => {
             console.log(result);
             this.ngOnInit();
-            this.snackBar.open("El pedido ha sido cancelado", "", { duration: 3000, verticalPosition: 'top' });
+            this.snackBar.open("El pedido ha sido cancelado", "", { duration: 3000, verticalPosition: 'bottom' });
           },
           error => {
             console.error(error);
@@ -174,7 +174,7 @@ export class DashboardComponent implements OnInit {
           response => {
             console.log(response);
             this.ngOnInit();
-            this.snackBar.open("El pedido se ha entregado", "", { duration: 3000, verticalPosition: 'top' });
+            this.snackBar.open("El pedido se ha entregado", "", { duration: 3000, verticalPosition: 'bottom' });
           },
           error => {
             console.error(error);
@@ -206,7 +206,7 @@ export class DashboardComponent implements OnInit {
           result => {
             console.log(result);
             this.ngOnInit();
-            this.snackBar.open("El pedido ha sido actualizado", "", { duration: 3000, verticalPosition: 'top' });
+            this.snackBar.open("El pedido ha sido actualizado", "", { duration: 3000, verticalPosition: 'bottom' });
           },
           error => {
             console.error(error);
@@ -234,7 +234,7 @@ export class DashboardComponent implements OnInit {
         console.log(detallePedido);
         this.detallePedidoService.updatePedidoDetalle(detallePedido).subscribe(
           result => {
-            this.snackBar.open("El pedido ha sido actualizado", "", { duration: 3000, verticalPosition: 'top' });
+            this.snackBar.open("El pedido ha sido actualizado", "", { duration: 3000, verticalPosition: 'bottom' });
             this.ngOnInit();
           },
           error => {
