@@ -22,12 +22,17 @@ export class UserListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.spinner.show();
     this.userService.getUsuarios().subscribe(
       result=>{
         console.log(result);
         this.usuarios = result;
       },
-      error=>console.error(error)
+      error=>{
+        console.error(error);
+        this.spinner.hide();
+      },
+      ()=>this.spinner.hide()
     );
   }
 

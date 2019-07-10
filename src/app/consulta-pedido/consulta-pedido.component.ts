@@ -61,6 +61,8 @@ export class ConsultaPedidoComponent implements OnInit {
                 },
                 ()=>this.spinner.hide()
               );
+            } else {
+              this.spinner.hide();
             }
           },
           (error)=>{

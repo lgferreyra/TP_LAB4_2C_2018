@@ -247,6 +247,7 @@ export class DashboardComponent implements OnInit {
   }
 
   verPedido(pedido) {
+    this.spinner.show();
     this.pedidoService.getDetallePedido(pedido.pedidoID).subscribe(
       (result) => {
         const dialogRef = this.dialog.open(ConsultaDialog, {
@@ -254,7 +255,11 @@ export class DashboardComponent implements OnInit {
           data: { items: result, title: pedido.codigoPedido }
         });
       },
-      (error) => console.error(error)
+      (error) => {
+        console.error(error);
+        this.spinner.hide();
+      },
+      ()=>this.spinner.hide()
     );
   }
 }
