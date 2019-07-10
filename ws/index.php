@@ -208,7 +208,7 @@ $app->get('/usuarios', function (Request $request, Response $response, array $ar
     return $response;
 });
 
-$app->put('/usuario/eliminar', function ($request, $response, $args) {
+$app->post('/usuario/eliminar', function ($request, $response, $args) {
 
     $usuario = $request->getParsedBody();
 
@@ -244,7 +244,7 @@ $app->put('/usuario/eliminar', function ($request, $response, $args) {
     return $response;
 });
 
-$app->put('/usuario/suspender', function ($request, $response, $args) {
+$app->post('/usuario/suspender', function ($request, $response, $args) {
 
     $usuario = $request->getParsedBody();
 
@@ -417,7 +417,7 @@ $app->get('/pedido/estado/{estado}', function (Request $request, Response $respo
     FROM pedido p 
     INNER JOIN mesa m ON m.MesaID = p.mesaID
     INNER JOIN usuario u ON u.usuarioID = p.mozoID
-    INNER JOIN estadoPedido ep ON ep.estadoPedidoID = p.estadoPedidoID
+    INNER JOIN estadopedido ep ON ep.estadoPedidoID = p.estadoPedidoID
     WHERE p.estadoPedidoID = ?
     ");
     $consulta->execute(array($estado));
@@ -436,7 +436,7 @@ $app->get('/pedido', function (Request $request, Response $response, array $args
     FROM pedido p 
     INNER JOIN mesa m ON m.MesaID = p.mesaID
     INNER JOIN usuario u ON u.usuarioID = p.mozoID
-    INNER JOIN estadoPedido ep ON ep.estadoPedidoID = p.estadoPedidoID
+    INNER JOIN estadopedido ep ON ep.estadoPedidoID = p.estadoPedidoID
     WHERE ep.estadoPedidoID < 4
     Order by p.estadoPedidoID, p.fechaCreacion
     ");
@@ -500,7 +500,7 @@ $app->post('/pedido', function ($request, $response, $args) {
         FROM pedido p 
         INNER JOIN mesa m ON m.MesaID = p.mesaID
         INNER JOIN usuario u ON u.usuarioID = p.mozoID
-        INNER JOIN estadoPedido ep ON ep.estadoPedidoID = p.estadoPedidoID
+        INNER JOIN estadopedido ep ON ep.estadoPedidoID = p.estadoPedidoID
         WHERE p.pedidoID = ?
         ");
         $consulta->execute(array($idInsertado));
@@ -522,7 +522,7 @@ $app->post('/pedido', function ($request, $response, $args) {
     return $response;
 });
 
-$app->put('/pedido/cancelar', function ($request, $response, $args) {
+$app->post('/pedido/cancelar', function ($request, $response, $args) {
     
     try {
         $pedido = $request->getParsedBody();
@@ -571,7 +571,7 @@ $app->put('/pedido/cancelar', function ($request, $response, $args) {
 });
 
 
-$app->put('/pedido/estado', function ($request, $response, $args) {
+$app->post('/pedido/estado', function ($request, $response, $args) {
 
     $pedido = $request->getParsedBody();
 
@@ -593,7 +593,7 @@ $app->put('/pedido/estado', function ($request, $response, $args) {
             )
         );
             
-        $sqlPedidoDetalle= "UPDATE pedidoDetalle SET estadoPedidoID=?
+        $sqlPedidoDetalle= "UPDATE pedidodetalle SET estadoPedidoID=?
         WHERE pedidoID=?";
         $consulta = $pdo->RetornarConsulta($sqlPedidoDetalle);
         $consulta->execute(
@@ -618,7 +618,7 @@ $app->put('/pedido/estado', function ($request, $response, $args) {
 
 //PEDIDODETALLE
 
-$app->put('/pedidoDetalle/estado', function ($request, $response, $args) {
+$app->post('/pedidoDetalle/estado', function ($request, $response, $args) {
 
     $pedidoDetalle = $request->getParsedBody();
 
@@ -799,7 +799,7 @@ $app->get('/itemMenu', function (Request $request, Response $response, array $ar
     $consulta = $objetoAccesoDato->RetornarConsulta("
     SELECT im.*
     FROM itemmenu im
-    INNER JOIN Sector s on s.sectorID = im.sectorID
+    INNER JOIN sector s on s.sectorID = im.sectorID
     ");
     $consulta->execute();
     $respuesta = $consulta->fetchAll();
@@ -816,7 +816,7 @@ $app->get('/itemMenu/sector/{sectorID}', function (Request $request, Response $r
     $consulta = $objetoAccesoDato->RetornarConsulta("
     SELECT im.*
     FROM itemmenu im
-    INNER JOIN Sector s on s.sectorID = im.sectorID
+    INNER JOIN sector s on s.sectorID = im.sectorID
     WHERE s.sectorID = ?
     ");
     $consulta->execute(array($sectorID));
@@ -864,7 +864,7 @@ $app->get('/reporte/empleado/operaciones', function (Request $request, Response 
 
     $objetoAccesoDato = AccesoDatos::dameUnObjetoAcceso();
     $consulta = $objetoAccesoDato->RetornarConsulta("
-    SELECT s.sectorID, s.nombre, COUNT(1) as operaciones FROM pedidoDetalle pd
+    SELECT s.sectorID, s.nombre, COUNT(1) as operaciones FROM pedidodetalle pd
     INNER JOIN itemmenu im ON im.itemMenuID = pd.itemMenuID
     INNER JOIN sector s ON s.sectorID = im.sectorID
     WHERE (pd.estadoPedidoID = 4 OR pd.estadoPedidoID = 3)
@@ -875,7 +875,7 @@ $app->get('/reporte/empleado/operaciones', function (Request $request, Response 
     $respuesta["bySector"] = $consulta->fetchAll();
 
     $consulta = $objetoAccesoDato->RetornarConsulta("
-    SELECT CONCAT(u.nombre, ' ', u.apellido) as nombre, COUNT(1) as operaciones FROM pedidoDetalle pd
+    SELECT CONCAT(u.nombre, ' ', u.apellido) as nombre, COUNT(1) as operaciones FROM pedidodetalle pd
     INNER JOIN usuario u ON u.usuarioID = pd.usuarioID
     WHERE (pd.estadoPedidoID = 4 OR pd.estadoPedidoID = 3)
     AND pd.fechaFin BETWEEN ? AND ?
