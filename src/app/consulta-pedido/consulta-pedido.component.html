@@ -2,23 +2,29 @@
   <div class="card">
     <div class="card-body">
       <h4 class="card-title">Detalle de su pedido</h4>
-      <div class="row">
-        <div class="col-sm-3">
-          <div class="row">
-            <div class="col-sm-4">
-              <h5 class="card-text text-right">Cliente:</h5>
-              <h5 class="card-text text-right">Mesa:</h5>
-              <h5 class="card-text text-right">Pedido:</h5>
-            </div>
-            <div class="col-sm-8">
-              <h5 class="card-text text-primary text-left">{{cliente}}</h5>
-              <h5 class="card-text text-primary text-left">{{mesa}}</h5>
-              <h5 class="card-text text-primary text-left">{{pedido}}</h5>
-            </div>
-          </div>
+      <div class="row" style="margin-bottom: 20px">
+        <div class="col-sm-2">
+          <h5 class="card-text text-right">Cliente:</h5>
         </div>
-        <div class="col-sm-9">
-          <table *ngIf="pedidoDetalles.length != 0" class="table">
+        <div class="col-sm-10">
+          <h5 class="card-text text-primary text-left">{{cliente}}</h5>
+        </div>
+        <div class="col-sm-2">
+          <h5 class="card-text text-right">Mesa:</h5>
+        </div>
+        <div class="col-sm-10">
+          <h5 class="card-text text-primary text-left">{{mesa}}</h5>
+        </div>
+        <div class="col-sm-2">
+          <h5 class="card-text text-right">Pedido:</h5>
+        </div>
+        <div class="col-sm-10">
+          <h5 class="card-text text-primary text-left">{{pedido}}</h5>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-sm-10">
+          <table *ngIf="pedidoDetalles.length != 0" class="table table-responsive-sm">
             <thead>
               <tr>
                 <th scope="col">Detalle</th>
@@ -58,7 +64,7 @@
           </table>
         </div>
       </div>
-      <button (click)="encuesta()" class="btn btn-primary">Encuesta</button>
+      <button *ngIf="showEncuesta != 0" (click)="encuesta()" class="btn btn-primary">Encuesta</button>
     </div>
   </div>
 </div>

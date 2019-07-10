@@ -87,13 +87,32 @@ export class MesaService {
             let data = [];
             let json = response.json();
 
-            labels.push("Mesa máximo: " + json[0].mesa);
-            data.push(json[0].total);
-
-            labels.push("Mesa Mínimo: " + json[1].mesa);
-            data.push(json[1].total);
-
-            return {labels:labels, data:[{ data: data[0], label: 'Importe' },{ data: data[1], label: 'Importe' }]};
+            if(json.length == 0){
+              labels.push("No hay datos");
+              data.push(0);
+  
+              labels.push("No hay datos");
+              data.push(0);
+  
+              return {labels:labels, data:[{ data: data[0], label: 'Importe' },{ data: data[1], label: 'Importe' }]};
+            } else if (json.length == 1) {
+              labels.push("Mesa máximo: " + json[0].mesa);
+              data.push(json[0].total);
+  
+              labels.push("Mesa Mínimo: " + json[0].mesa);
+              data.push(json[0].total);
+  
+              return {labels:labels, data:[{ data: data[0], label: 'Importe' },{ data: data[1], label: 'Importe' }]};
+            } else {
+              labels.push("Mesa máximo: " + json[0].mesa);
+              data.push(json[0].total);
+  
+              labels.push("Mesa Mínimo: " + json[1].mesa);
+              data.push(json[1].total);
+  
+              return {labels:labels, data:[{ data: data[0], label: 'Importe' },{ data: data[1], label: 'Importe' }]};
+            }
+            
         },
         error=>{
             console.error(error);

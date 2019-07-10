@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://localhost/ws/",
-  authUrl: "http://localhost/ws/PHP/server/jwt/php/auth.php",
+  apiUrl: location.protocol + "//localhost/ws/",
+  authUrl: location.protocol + "//localhost/ws/PHP/server/jwt/php/auth.php",
   geoUrl:"http://maps.googleapis.com/maps/api/geocode/json?"
 };

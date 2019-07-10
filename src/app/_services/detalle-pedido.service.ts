@@ -14,7 +14,7 @@ export class DetallePedidoService {
   ) { }
   
   updatePedidoDetalle(detallePedido){
-    return this.http.put(this.url + "pedidoDetalle/estado", detallePedido).map(
+    return this.http.post(this.url + "pedidoDetalle/estado", detallePedido).map(
       (response)=>{
         return response.json();
       },

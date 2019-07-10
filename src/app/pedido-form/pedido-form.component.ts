@@ -6,6 +6,7 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { MesaService } from '../_services/mesa.service';
 import { Router } from '@angular/router';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-pedido-form',
@@ -13,13 +14,13 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
   styleUrls: ['./pedido-form.component.css']
 })
 export class PedidoFormComponent implements OnInit {
-  
-  private itemsMenu = [];
-  private selectedItemsMenu = [];
-  private pedidoDetalles = [];
-  private mesas = [];
-  private mozo;
-  private selectedSector = "0";
+
+  public itemsMenu = [];
+  public selectedItemsMenu = [];
+  public pedidoDetalles = [];
+  public mesas = [];
+  public mozo;
+  public selectedSector = "0";
 
   pedidoForm = this.fb.group({
     id: [''],
@@ -32,7 +33,7 @@ export class PedidoFormComponent implements OnInit {
     fechaFin: [''],
     estado: ['']
   });
-  
+
   constructor(
     private fb: FormBuilder,
     private pedidoService: PedidoService,
@@ -40,101 +41,111 @@ export class PedidoFormComponent implements OnInit {
     private authService: AuthenticationService,
     private mesaService: MesaService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     public dialog: MatDialog
-    ) { }
+  ) { }
 
   ngOnInit() {
-   this.itemMenuService.getItems().subscribe(
-     (result)=>{
-       this.itemsMenu = result;
-       this.selectedItemsMenu = this.itemsMenu;
-     },
-     error=>console.error(error)
-   );
-   let token = localStorage.getItem('currentUser');
-   if(token!=null){
-    this.authService.getUserInfo(token).subscribe(
-      (result)=>{
-        this.mozo = result.data.id;
-        this.pedidoForm.get('mozo').setValue(this.mozo);
-      }
+    this.spinner.show();
+    this.itemMenuService.getItems().subscribe(
+      (result) => {
+        this.itemsMenu = result;
+        this.selectedItemsMenu = this.itemsMenu;
+      },
+      error => console.error(error),
+      () => this.spinner.hide()
     );
-    this.mesaService.getMesas().subscribe(
-      (result)=>{
-        console.log(result);
-        this.mesas = result;
-        if(this.mesas.length>0){
-          this.pedidoForm.get('mesa').setValue(this.mesas[0].MesaID)
+    let token = localStorage.getItem('currentUser');
+    if (token != null) {
+      this.authService.getUserInfo(token).subscribe(
+        (result) => {
+          this.mozo = result.data.id;
+          this.pedidoForm.get('mozo').setValue(this.mozo);
         }
-      }
-    );
-   }
+      );
+      this.mesaService.getMesas().subscribe(
+        (result) => {
+          console.log(result);
+          this.mesas = result;
+          if (this.mesas.length > 0) {
+            this.pedidoForm.get('mesa').setValue(this.mesas[0].MesaID)
+          }
+        }
+      );
+    }
   }
 
 
-  clear(){
+  clear() {
     this.pedidoForm.reset();
     this.pedidoForm.get('mozo').setValue(this.mozo);
     this.pedidoDetalles = [];
   }
 
-  addItem(item){
+  addItem(item) {
     console.log(item);
     let exist = false;
     this.pedidoDetalles.forEach(element => {
-      if(element.item.itemMenuID===item.itemMenuID){
+      if (element.item.itemMenuID === item.itemMenuID) {
         exist = true;
       }
     });
-    if(!exist){
-      this.pedidoDetalles.push({item:item, cantidad:1});
+    if (!exist) {
+      this.pedidoDetalles.push({ item: item, cantidad: 1 });
     }
   }
 
-  removeItem(item){
+  removeItem(item) {
     console.log(item);
     console.log(this.pedidoDetalles.indexOf(item));
-    this.pedidoDetalles.splice(this.pedidoDetalles.indexOf(item),1);
+    this.pedidoDetalles.splice(this.pedidoDetalles.indexOf(item), 1);
   }
 
   onSubmit() {
     // TODO: Use EventEmitter with form value
+    this.spinner.show();
     let pedido = this.pedidoForm.value;
     pedido.pedidoDetalles = this.pedidoDetalles;
     console.info(pedido);
     this.pedidoService.savePedido(pedido).subscribe(
-      (response)=>{
+      (response) => {
         console.log(response);
+        this.spinner.hide();
         const dialogRef = this.dialog.open(ResumenDialog, {
           width: '270px',
-          data: {codigoPedido:response.codigoPedido,codigoMesa:response.codigoMesa}
+          data: { codigoPedido: response.codigoPedido, codigoMesa: response.codigoMesa }
         });
         dialogRef.afterClosed().subscribe(result => {
           this.router.navigate(["/dashboard"]);
         });
-      }
+      },
+      (error)=>{
+        console.error(error);
+        this.spinner.hide();
+      },
+      ()=>this.spinner.hide()
     );
   }
 
-  changeSector(){
+  changeSector() {
     console.log(this.selectedSector);
     this.selectedItemsMenu = this.itemsMenu;
     this.selectedItemsMenu = this.selectedItemsMenu.filter(
-      (item, index)=>{
+      (item, index) => {
         console.log(item);
-        if(this.selectedSector == "0" || item.sectorID == parseInt(this.selectedSector)){
+        if (this.selectedSector == "0" || item.sectorID == parseInt(this.selectedSector)) {
           return item;
         }
       }
     );
   }
 
-  test(){
+  test() {
     const dialogRef = this.dialog.open(ResumenDialog, {
       width: '270px',
-      data: {codigoPedido:1,codigoMesa:2}
+      data: { codigoPedido: 1, codigoMesa: 2 }
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       this.router.navigate(["/dashboard"]);
     });
@@ -150,7 +161,7 @@ export class ResumenDialog {
 
   constructor(
     public dialogRef: MatDialogRef<ResumenDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   onNoClick(): void {
     this.dialogRef.close();

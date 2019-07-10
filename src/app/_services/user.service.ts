@@ -83,7 +83,7 @@ export class UserService {
     }
 
     eliminarUsuario(usuario) {
-        return this.http.put(this.url + "usuario/eliminar", usuario).map(
+        return this.http.post(this.url + "usuario/eliminar", usuario).map(
             response => {
                 return response.json();
             },
@@ -92,7 +92,7 @@ export class UserService {
     }
 
     suspenderUsuario(usuario) {
-        return this.http.put(this.url + "usuario/suspender", usuario).map(
+        return this.http.post(this.url + "usuario/suspender", usuario).map(
             response => {
                 console.log(response);
                 return response.json();

@@ -12,12 +12,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class ConsultaPedidoComponent implements OnInit {
 
-  private pedidoDetalles = [];
-  private total = 0;
-  private entregado = 0;
-  private cliente = "";
-  private mesa = "";
-  private pedido = "";
+  public pedidoDetalles = [];
+  public total = 0;
+  public entregado = 0;
+  public cliente = "";
+  public mesa = "";
+  public pedido = "";
+  public showEncuesta = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,6 +33,7 @@ export class ConsultaPedidoComponent implements OnInit {
     this.route.paramMap.subscribe(
       params => {
         console.log(params);
+        this.spinner.show();
         this.pedidoService.getPedido(params.get("mesa"), params.get("pedido")).subscribe(
           result => {
             console.log(result);
@@ -47,14 +49,23 @@ export class ConsultaPedidoComponent implements OnInit {
               this.pedidoService.checkEncuenta(this.pedidoDetalles[0].pedidoID).subscribe(
                 result => {
                   if (result.existe == 0) {
+                    this.showEncuesta = 1;
                     setTimeout((args) => {
                       this.encuesta();
-                    }, 3000);
+                    }, 2000);
                   }
                 },
-                error => console.error(error)
+                error => {
+                  console.error(error);
+                  this.spinner.hide();
+                },
+                ()=>this.spinner.hide()
               );
             }
+          },
+          (error)=>{
+            console.error(error);
+            this.spinner.hide();
           }
         );
 
@@ -85,6 +96,7 @@ export class ConsultaPedidoComponent implements OnInit {
             (result) => {
               console.log(result);
               this.snackBar.open("Muchas gracias por su tiempo", "", { duration: 3000, verticalPosition: "bottom" });
+              this.showEncuesta = 0;
               this.ngOnInit();
             },
             error => {

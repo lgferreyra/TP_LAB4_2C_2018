@@ -74,7 +74,7 @@ export class PedidoService {
   }
 
   entregaPedido(pedido: any){
-    return this.http.put(this.url + "pedido/estado", pedido).map(
+    return this.http.post(this.url + "pedido/estado", pedido).map(
       (response)=>{
         console.log(response);
         return response.statusText;
@@ -84,7 +84,7 @@ export class PedidoService {
   }
 
   cancelarPedido(pedido: any){
-    return this.http.put(this.url + "pedido/cancelar", pedido).map(
+    return this.http.post(this.url + "pedido/cancelar", pedido).map(
       (response)=>{
         console.log(response);
         return response.statusText;

@@ -85,8 +85,7 @@ export class DashboardComponent implements OnInit {
       (error) => {
         console.error(error);
         this.spinner.hide();
-      },
-      () => this.spinner.hide()
+      }
     );
   }
 

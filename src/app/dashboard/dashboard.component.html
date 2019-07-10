@@ -8,7 +8,7 @@
             <button type="button" class="btn btn-primary" routerLink="/pedidoForm">Nuevo pedido</button>
           </div>
         </div>
-        <table *ngIf="pedidos.length != 0" class="table table-hover">
+        <table *ngIf="pedidos.length != 0" class="table table-hover table-responsive-sm">
           <thead>
             <tr>
               <th scope="col">Pedido</th>
@@ -58,7 +58,7 @@
     
     <div *ngIf="viewDetallesPedidos">
       <h3>Detalles</h3>
-      <table *ngIf="detallesPedidos.length != 0" class="table table-hover">
+      <table *ngIf="detallesPedidos.length != 0" class="table table-hover table-responsive-sm">
           <thead>
             <tr>
               <th scope="col">Detalle</th>
