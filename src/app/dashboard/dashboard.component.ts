@@ -39,6 +39,8 @@ export class DashboardComponent implements OnInit {
 
   pedidos = [];
   detallesPedidos = [];
+  pedidosTerminados = [];
+  detallesPedidosTerminados = [];
 
   userID;
   perfilID;
@@ -57,7 +59,8 @@ export class DashboardComponent implements OnInit {
         if (this.socio || this.mozo) {
           this.pedidoService.getPedidos().subscribe(
             (result) => {
-              this.pedidos = result
+              this.pedidos = result.pendiente;
+              this.pedidosTerminados = result.terminado;
             },
             (error) => {
               console.error(error);
@@ -71,7 +74,8 @@ export class DashboardComponent implements OnInit {
           this.pedidoService.getDetallePedidoDashboard(this.userID).subscribe(
             (result) => {
               console.log(result);
-              this.detallesPedidos = result
+              this.detallesPedidos = result.pendiente;
+              this.detallesPedidosTerminados = result.terminado;
             },
             (error) => {
               console.error(error);

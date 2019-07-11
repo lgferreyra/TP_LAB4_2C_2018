@@ -441,7 +441,22 @@ $app->get('/pedido', function (Request $request, Response $response, array $args
     Order by p.estadoPedidoID, p.fechaCreacion
     ");
     $consulta->execute();
-    $respuesta = $consulta->fetchAll();
+    $respuesta["pendiente"] = $consulta->fetchAll();
+
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT p.pedidoID, p.mozoID, u.nombre as nombreMozo, u.apellido, p.mesaID, m.codigo AS codigoMesa, p.codigo AS codigoPedido,
+     p.nombreCliente, p.foto, p.fechaCreacion, p.estadoPedidoID, ep.nombre as estado
+    FROM pedido p 
+    INNER JOIN mesa m ON m.MesaID = p.mesaID
+    INNER JOIN usuario u ON u.usuarioID = p.mozoID
+    INNER JOIN estadopedido ep ON ep.estadoPedidoID = p.estadoPedidoID
+    WHERE ep.estadoPedidoID > 3
+    AND p.fechaCreacion > NOW() - INTERVAL 1 DAY
+    ORDER BY p.pedidoID DESC
+    ");
+    $consulta->execute();
+    $respuesta["terminado"] = $consulta->fetchAll();
+
     $json = json_encode($respuesta);
     $response->write($json);
     return $response;
@@ -787,7 +802,27 @@ $app->get('/pedidoDetalle/dashboard/{userID}', function (Request $request, Respo
     ORDER BY ep.estadoPedidoID, p.fechaCreacion
     ");
     $consulta->execute(array($userID,$userID));
-    $respuesta = $consulta->fetchAll();
+    $respuesta["pendiente"] = $consulta->fetchAll();
+
+    $consulta = $objetoAccesoDato->RetornarConsulta("
+    SELECT pd.pedidoDetalleID, pd.itemMenuID, im.nombre AS item, im.sectorID, pd.cantidad, pd.fechaInicio,
+    pd.fechaFin, pd.tiempoEstimado, pd.estadoPedidoID, ep.nombre AS estado, pd.pedidoID, p.codigo, pd.usuarioID
+    FROM usuario u 
+    INNER JOIN perfilsector ps ON ps.perfilID = u.perfilID
+    INNER JOIN sector s ON s.sectorID = ps.sectorID
+    INNER JOIN itemmenu im ON im.sectorID = s.sectorID
+    INNER JOIN pedidodetalle pd ON pd.itemMenuID = im.itemMenuID
+    INNER JOIN pedido p ON p.pedidoID = pd.pedidoID
+    INNER JOIN estadopedido ep ON ep.estadoPedidoID = pd.estadoPedidoID
+    WHERE u.usuarioID = ?
+    AND ep.estadoPedidoID > 3
+    AND pd.fechaFin > NOW() - INTERVAL 1 DAY
+    AND (pd.usuarioID = ? OR pd.usuarioID is null)
+    ORDER BY ep.estadoPedidoID, p.fechaCreacion
+    ");
+    $consulta->execute(array($userID,$userID));
+    $respuesta["terminado"] = $consulta->fetchAll();
+
     $json = json_encode($respuesta);
     $response->write($json);
     return $response;
